@@ -23,7 +23,30 @@
     <link rel="stylesheet" href="css/magnific-popup.css" type="text/css">
     <link rel="stylesheet" href="css/owl.carousel.min.css" type="text/css">
     <link rel="stylesheet" href="css/slicknav.min.css" type="text/css">
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
     <link rel="stylesheet" href="css/style.css" type="text/css">
+
+    <style>
+        .truncate-multi-line {
+    display: -webkit-box;           /* Necessary for multi-line truncation */
+    -webkit-box-orient: vertical;   /* Sets the orientation to vertical */
+    overflow: hidden;               /* Hides overflowed text */
+    -webkit-line-clamp: 3;          /* Limits text to 3 lines */
+}
+
+@media (max-width: 768px) {
+    .table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+}
+
+.table-responsive table {
+    width: 100%; /* Ensures the table takes full width */
+    min-width: 600px; /* Adjust based on the minimum width needed for your table */
+}
+
+}
+    </style>
 </head>
 
 <body>
@@ -56,7 +79,7 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-12">
-                <div class="shop__cart__table">
+                <div class="shop__cart__table table-responsive">
                     <table>
                         <thead>
                             <tr>
@@ -94,14 +117,14 @@
                                             $total += $productTotal;
                             ?>
                                             <tr data-product-id="<?php echo $item['id']; ?>">
-                                                <td class="cart__product__item">
+                                                <td class="cart__product__item mr-3">
                                                     <img src="images/<?php echo $item['cover'] ?>" alt="" width="60px">
                                                     <div class="cart__product__item__title">
-                                                        <h6><?php echo $item['name']; ?></h6>
+                                                        <h6 class="truncate-multi-line "><?php echo $item['name']; ?></h6>
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <select class="item_size">
+                                                    <select class="item_size mr-5 select-form">
                                                         <!-- Add size options dynamically as needed -->
                                                         <option value="<?php echo $item['size']; ?>"><?php echo $item['size']; ?></option>
                                                     </select>
@@ -111,6 +134,8 @@
                                                     <div class="pro-qty">
                                                         <input type="number" class="quantity-input" value="<?php echo $item['quantity']; ?>" min="1">
                                                     </div>
+
+
                                                 </td>
                                                 <td class="cart__total">$<span class="product-total"><?php echo $productTotal; ?></span></td>
                                                 <td class="cart__close"><span class="icon_close"></span></td>
@@ -140,8 +165,10 @@
             <div class="col-lg-6">
                 <div class="discount__content" <?php if(!isLoggedIn()){echo 'style="display:none"';} ?>>
                     <h6>Discount codes</h6>
-                    <input id="couponCode" type="text" placeholder="Enter your coupon code">
-                    <button id="applyCoupon" type="submit" class="site-btn">Apply</button>
+                    <form >
+                    <input id="couponCode" type="text" placeholder="Enter your coupon code" >
+                    <button id="applyCoupon" type="button" class="site-btn" <?php if($total_price<=0){echo 'disabled';} ?>>Apply</button>
+                    </form>
                 </div>
             </div>
             <div class="col-lg-4 offset-lg-2" <?php if(!isLoggedIn()){echo 'style="display:none"';}?>>
@@ -150,7 +177,10 @@
                     <ul>
                         <li>Total <span id="cart-total">$<?php echo $total_price ? $total_price : 0; ?></span></li>
                     </ul>
-                    <a href="./checkout.php" class="primary-btn" <?php if($total_price<=0){echo 'disabled';} ?>>Proceed to checkout</a>
+                    <?php if(!$total_price<=0){
+                      echo'  <a href="./checkout.php" class="primary-btn" >Proceed to checkout</a>';
+                    }?>
+                    
                 </div>
             </div>
         </div>
@@ -243,12 +273,16 @@
     <script src="js/owl.carousel.min.js"></script>
     <script src="js/jquery.nicescroll.min.js"></script>
     <script src="js/notify.js" ></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
     <script src="js/main.js"></script>
     <script src="js/cart.js"></script> 
     <script>
         document.getElementById('applyCoupon').addEventListener('click', function() {
         const couponCode = document.getElementById('couponCode').value;
+        if (couponCode.trim() === '') {
+            $.notify("Please enter a coupon code.", "error");
+            return;
+        }
 
     fetch('helper_functions/apply_coupon.php', {
         method: 'POST',

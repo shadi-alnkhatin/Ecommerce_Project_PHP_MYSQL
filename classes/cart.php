@@ -52,6 +52,9 @@ class Cart {
         $stmt = $this->db->prepare("DELETE FROM cart_items WHERE cart_id = :cart_id");
         $stmt->bindParam(':cart_id', $cart_id);
         $stmt->execute();
+        if(isset($_SESSION['discountTotal'])){
+            unset($_SESSION['discountTotal']);
+        }
     }
 
     public function removeItemFromCart( $product_id) {
@@ -60,6 +63,9 @@ class Cart {
         $stmt->bindParam(':cart_id', $cartId);
         $stmt->bindParam(':product_id', $product_id);
         $stmt->execute();
+        if(isset($_SESSION['discountTotal'])){
+            unset($_SESSION['discountTotal']);
+        }
     }
 
     private function getCartId(){
@@ -101,6 +107,9 @@ class Cart {
 
                 if ($cart) {
                     // Check if the product is already in the cart
+                    if(isset($_SESSION['discountTotal'])){
+                        unset($_SESSION['discountTotal']);
+                    }
                     $sql = $this->db->prepare("SELECT * FROM cart_items WHERE cart_id = :cart_id AND product_id = :product_id");
                     $sql->bindParam(':cart_id', $cart['cart_id']);
                     $sql->bindParam(':product_id', $product_id);
@@ -171,6 +180,9 @@ class Cart {
                     $item = $stmt->fetch(PDO::FETCH_ASSOC);
 
                     if ($item) {
+                        if(isset($_SESSION['discountTotal'])){
+                            unset($_SESSION['discountTotal']);
+                        }
                         // Update the quantity of the product in the cart
                         $stmt = $this->db->prepare("UPDATE cart_items SET quantity = :quantity WHERE cart_id = :cart_id AND product_id = :product_id");
                         $stmt->bindParam(':quantity', $newQuantity);
@@ -269,7 +281,7 @@ class Cart {
         if ($coupon) {
             $discountPercentage = $coupon['discount_percentage'];
             $totalPrice = $this->calculateTotal();
-            $discountedTotal = $totalPrice - ($totalPrice * ($discountPercentage / 100));
+            $discountedTotal =ceil( $totalPrice - ($totalPrice * ($discountPercentage / 100)));
 
             return [
                 'total' => $discountedTotal,

@@ -28,6 +28,62 @@ include('./classes/products.php');
     <link rel="stylesheet" href="css/owl.carousel.min.css" type="text/css">
     <link rel="stylesheet" href="css/slicknav.min.css" type="text/css">
     <link rel="stylesheet" href="css/style.css" type="text/css">
+    <style>
+        /* Container styling */
+        .SelectContainer {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Heading styling */
+        h4 {
+            font-size: 1.25rem;
+            color: #333;
+            margin: 0;
+        }
+
+        /* Select dropdown styling */
+        .form-select {
+            flex-grow: 1;
+            padding: 0.75rem;
+            font-size: 1rem;
+            color: #555;
+            border: 1px solid #ddd;
+            border-radius: 0.375rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        /* Hover and focus effect */
+        .form-select:hover, .form-select:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
+            outline: none;
+        }
+
+        /* Image icon styling */
+        .select-icon {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+            display: inline-block;
+            margin-right: 0.5rem;
+            filter: grayscale(1); /* Optional: grayscale effect */
+            transition: filter 0.3s ease;
+        }
+
+        .select-icon:hover {
+            filter: grayscale(0); /* Removes grayscale on hover */
+        }
+        .brand-logo{
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+    </style>
 </head>
 
 <body>
@@ -72,22 +128,24 @@ include('./classes/products.php');
                 <h4>Categories</h4>
             </div>
              <!-- League Select -->
-        <div class="my-3">
-            <h4>League</h4>
-            <select id="leagueSelect" class="form-select" aria-label="Select League">
-                <option selected value="" disabled>Select a league</option>
-                
-            </select>
-        </div>
+             <div class="my-3 SelectContainer">
+    <!-- <img src="path/to/league-icon.png" alt="League Icon" class="select-icon"> -->
+    <h4>League</h4>
+    <select id="leagueSelect" class="form-select" aria-label="Select League">
+        <option selected value="" disabled>Select a league</option>
+        <!-- Options will be added dynamically -->
+    </select>
+</div>
 
-        <!-- Teams Select -->
-        <div class="my-3">
-            <h4>Teams</h4>
-            <select id="teamSelect" class="form-select" aria-label="Select Team">
-            <option selected value="" >Select a team</option>
-            <!-- Options will be populated based on the selected league -->
-            </select>
-        </div>
+<div class="my-3 SelectContainer">
+    <!-- <img src="path/to/team-icon.png" alt="Team Icon" class="select-icon"> -->
+    <h4>Teams</h4>
+    <select id="teamSelect" class="form-select" aria-label="Select Team">
+        <option selected value="">Select a team</option>
+        <!-- Options will be populated based on the selected league -->
+    </select>
+</div>
+
         </div>
 
         <!-- Price Filter -->
@@ -108,17 +166,21 @@ include('./classes/products.php');
             </div>
             <a id="apply-filters" onclick="filter()">Filter</a>
         </div>
+        <button class="btn btn-danger" onclick="ResetPage()">Reset Filter</button>
     </div>
 </div>
 
 
             <!-- Products Section -->
             <div class="col-lg-9 col-md-9">
+            <div class="brand-logo" >
+            <h3>All teams</h3><br>
+            </div>
                 <div class="row" id="productList">
 
 
                 
-
+                
                     <?php
                     
                     $product_obj = new Product($db);
@@ -127,25 +189,29 @@ include('./classes/products.php');
                     foreach ($productList as $product) {
                         ?>
                         <div class="col-lg-4 col-md-6">
-                            <div class="product__item sale">
-                                <div class="product__item__pic set-bg" 
-                                     data-setbg="images/<?php echo $product['cover']?> ">
-                                    
-                                    <ul class="product__hover">
-                                    <li><a href="images/<?php echo $product['cover']?>" class="image-popup"><span class="arrow_expand"></span></a></li>
-                                    <li><a class="addToWishlist" data-product-id="<?php echo $product['id'] ?>"><span class="icon_heart_alt"></span></a></li>
-                                        <li><a class="addToCart" data-product-id="<?php echo $product['id'] ?>"><span class="icon_bag_alt "></span></a></li>
-                                    </ul>
-                                </div>
+                            
+                             <div class="product__item sale">
+                             <div class="product__item__pic set-bg" data-setbg="images/<?php echo $product['cover']; ?>"> 
+                             
+                             <?php
+                             if($product['quantity']<=1){
+                                 echo'<div class="label stockout stockblue">Out Of Stock</div>';
+                             }
+                            
+                            ?>
+                             <ul class="product__hover">
+                                 <li><a href="images/<?php echo $product['cover']; ?>" class="image-popup"><span class="arrow_expand"></span></a></li>
+                                 <li><a class="addToWishlist" data-product-id="<?php echo $product['id']; ?>"><span class="icon_heart_alt"></span></a></li>
+                                <?php
+                                 if(!($product['quantity']<=1)){
+                                    echo' <li><a class="addToCart"   data-product-id="'.$product['id'].'"><span class="icon_bag_alt"></span></a></li>';
+                                 }
+                                ?>
+                             </ul>
+                        </div>
                                 <div class="product__item__text">
-                                    <h6><a href="./product-details.html?id=<?php echo $product['id'] ?>"><?php echo htmlspecialchars($product['name']); ?></a></h6>
-                                    <div class="rating">
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                    </div>
+                                    <h6><a href="./product-details.php?id=<?php echo $product['id'] ?>"><?php echo htmlspecialchars($product['name']); ?></a></h6>
+                                  
                                     <div class="product__price">$<?php echo htmlspecialchars($product['price']); ?></div>
                                 </div>
                             </div>
@@ -164,7 +230,7 @@ include('./classes/products.php');
                 <div class="pagination__option">
                         <?php
                         for ($page = 1; $page <= $totalPages; $page++) {
-                            echo '<a  onclick="filter(' . $page . ')">' . $page . '</a>';
+                            echo '<a href="#searchForm" class="' . ($page == 1 ? 'active' : '') . '" onclick="filter(' . $page . ')">' . $page . '</a>';
 
                         };?>
                 </div>
@@ -246,16 +312,7 @@ include('./classes/products.php');
     </footer>
     <!-- Footer Section End -->
 
-    <!-- Search Begin -->
-    <div class="search-model">
-        <div class="h-100 d-flex align-items-center justify-content-center">
-            <div class="search-close-switch">+</div>
-            <form class="search-model-form">
-                <input type="text" id="search-input" placeholder="Search here.....">
-            </form>
-        </div>
-    </div>
-    <!-- Search End -->
+ 
 
     <!-- Js Plugins -->
     <script src="js/jquery-3.3.1.min.js"></script>
@@ -273,6 +330,7 @@ include('./classes/products.php');
     <script src="js/add_to_cart.js"></script>
     <script>
     var isLoggedIn = <?php echo isset($_SESSION['user_id']) ? 'true' : 'false'; ?>;
+
     </script>
 
 </body>

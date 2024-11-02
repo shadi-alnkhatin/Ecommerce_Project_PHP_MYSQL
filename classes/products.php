@@ -8,20 +8,25 @@ class Product {
     }
 
     
-    public function getProducts($page = 1, $league_id = null, $team_id = null, $minPrice = null, $maxPrice = null, $perPage = 9) {
-        $query = "SELECT * FROM products WHERE 1=1";
+    public function getProducts($page = 1, $league_id = null, $team_id = null, $minPrice = null, $maxPrice = null, $size = null, $perPage = 9) {
+        $query = "SELECT p.* FROM products p 
+                  LEFT JOIN product_attributes pa ON p.id = pa.product_id 
+                  WHERE 1=1";
         
         if ($league_id !== null) {
-            $query .= " AND league_id = :league_id";
+            $query .= " AND p.league_id = :league_id";
         }
         if ($team_id !== null) {
-            $query .= " AND team_id = :team_id";
+            $query .= " AND p.team_id = :team_id";
         }
         if ($minPrice !== null) {
-            $query .= " AND price >= :minPrice";
+            $query .= " AND p.price >= :minPrice";
         }
         if ($maxPrice !== null) {
-            $query .= " AND price <= :maxPrice";
+            $query .= " AND p.price <= :maxPrice";
+        }
+        if ($size !== null) {
+            $query .= " AND pa.size = :size"; // Add size condition
         }
     
         // Calculate offset for pagination
@@ -35,7 +40,8 @@ class Product {
         if ($team_id !== null) $stmt->bindParam(':team_id', $team_id, PDO::PARAM_INT);
         if ($minPrice !== null) $stmt->bindParam(':minPrice', $minPrice, PDO::PARAM_STR);
         if ($maxPrice !== null) $stmt->bindParam(':maxPrice', $maxPrice, PDO::PARAM_STR);
-        
+        if ($size !== null) $stmt->bindParam(':size', $size, PDO::PARAM_STR); // Bind size parameter
+    
         // Bind offset and limit with integer parameters
         $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
         $stmt->bindParam(':limit', $perPage, PDO::PARAM_INT);
@@ -43,6 +49,7 @@ class Product {
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    // [1->id=1,name=real madrid .....]
     
     public function getProductsDetails($product_id){
         $stmt = $this->db->prepare("SELECT * FROM products  WHERE id = :product_id ");
@@ -91,7 +98,31 @@ class Product {
         
         // Execute and return total count
         $stmt->execute();
-        return $stmt->fetchColumn(); // Returns the total number of matching products
+        return $stmt->fetchColumn(); 
+    }
+    public function getRelatedProducts($product_id) {
+        // First query to get the team_id and league_id of the current product
+        $query = 'SELECT team_id, league_id FROM products WHERE id = :product_id';
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':product_id', $product_id, PDO::PARAM_INT);
+        $stmt->execute();
+        $result = $stmt->fetch();
+    
+        if (!$result) {
+            return []; 
+        }
+    
+        $team_id = $result['team_id'];
+        $league_id = $result['league_id'];
+    
+        $query = 'SELECT * FROM products WHERE league_id = :league_id AND team_id = :team_id AND id != :product_id LIMIT 3';
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':league_id', $league_id, PDO::PARAM_INT);
+        $stmt->bindParam(':team_id', $team_id, PDO::PARAM_INT);
+        $stmt->bindParam(':product_id', $product_id, PDO::PARAM_INT);
+        $stmt->execute();
+    
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     
     

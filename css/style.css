@@ -528,7 +528,7 @@ ol {
 -----------------------*/
 
 .banner {
-	height: 500px;
+	height: 1000px;
 }
 
 .banner__text span {
@@ -1625,6 +1625,11 @@ ol {
 	border-color: #0d0d0d;
 	color: #ffffff;
 }
+.pagination__option a.active {
+	background: #0d0d0d;
+	border-color: #0d0d0d;
+	color: #ffffff;
+}
 
 /*---------------------
   Product Details
@@ -1805,6 +1810,7 @@ ol {
 .product__details__button {
 	overflow: hidden;
 	margin-bottom: 25px;
+	cursor: pointer;
 }
 
 .product__details__button .cart-btn {
@@ -1819,6 +1825,7 @@ ol {
 	float: left;
 	margin-right: 10px;
 	margin-bottom: 10px;
+	cursor: pointer;
 }
 
 .product__details__button ul {
@@ -2141,6 +2148,10 @@ ol {
 
 .shop__cart__table tbody tr .cart__quantity {
 	width: 190px;
+}
+.shop__cart__table .item_size{
+	
+    /* margin-right: 40px; */
 }
 
 .shop__cart__table tbody tr .cart__quantity .pro-qty {
@@ -3683,4 +3694,8 @@ ol {
 		width: 100%;
 		font-size: 24px;
 	}
+}
+
+a,li{
+	cursor: pointer;
 }

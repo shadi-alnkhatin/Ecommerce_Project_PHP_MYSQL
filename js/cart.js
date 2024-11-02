@@ -1,40 +1,68 @@
 document.addEventListener('DOMContentLoaded', function() {
-    var quantityInputs = document.querySelectorAll('.quantity-input');
+    // Initialize jQuery quantity increment/decrement buttons
+    $(document).ready(function() {
+        var proQty = $('.pro-qty');
+        proQty.prepend('<span class="dec qtybtn">-</span>');
+        proQty.append('<span class="inc qtybtn">+</span>');
 
-    quantityInputs.forEach(function(input) {
-        input.addEventListener('change', function() {
-            console.log('Input changed'); // Debug log
-            var row = input.closest('tr');
-            var productId = row.getAttribute('data-product-id');
-            var newQuantity = input.value;
+        // Handle clicks on custom quantity buttons
+        proQty.on('click', '.qtybtn', function() {
+            var $button = $(this);
+            var $input = $button.siblings('input');
+            var oldValue = parseInt($input.val());
+            var newVal;
 
-            var xhr = new XMLHttpRequest();
-            xhr.open('POST', 'helper_functions/update_cart.php', true);
-            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            if ($button.hasClass('inc')) {
+                newVal = oldValue + 1;
+            } else {
+                newVal = Math.max(1, oldValue - 1); // Ensure quantity doesn’t go below 1
+            }
 
-            xhr.onload = function() {
-                if (xhr.status === 200) {
-                    console.log('Response received', xhr.responseText); // Debug log
+            $input.val(newVal);
+            $input.trigger('change'); // Trigger change event after updating quantity
 
-                    try {
-                        var data = JSON.parse(xhr.responseText);
-                        if (data.success) {
-                            row.querySelector('.product-total').textContent =  data.product_total;
-                            document.querySelector('#cart-total').textContent = '$'+    data.total_price;
-                        } else {
-                            console.error('Error updating cart:', data.message);
-                        }
-                    } catch (e) {
-                        console.error('Invalid JSON response');
+            // Directly call update function to ensure server is notified
+            updateCart($input);
+        });
+    });
+
+    // Function to handle quantity change event and send AJAX request
+    function updateCart(input) {
+        var row = input.closest('tr');
+        var productId = row.getAttribute('data-product-id');
+        var newQuantity = input.value;
+
+        // Send AJAX request to update the server
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', 'helper_functions/update_cart.php', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                try {
+                    var data = JSON.parse(xhr.responseText);
+                    if (data.success) {
+                        row.querySelector('.product-total').textContent = data.product_total;
+                        document.querySelector('#cart-total').textContent = '$' + data.total_price;
+                    } else {
+                        console.error('Error updating cart:', data.message);
                     }
+                } catch (e) {
+                    console.error('Invalid JSON response:', e);
                 }
-            };
+            }
+        };
 
-            xhr.send('product_id=' + productId + '&quantity=' + newQuantity);
+        xhr.send('product_id=' + productId + '&quantity=' + newQuantity);
+    }
+
+    // Attach change event listener to quantity inputs to handle manual updates
+    document.querySelectorAll('.quantity-input').forEach(function(input) {
+        input.addEventListener('change', function() {
+            updateCart(input);
         });
     });
 });
-
 
 document.addEventListener('DOMContentLoaded', function() {
     const deleteButtons = document.querySelectorAll('.cart__close .icon_close');

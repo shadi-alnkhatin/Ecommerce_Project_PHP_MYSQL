@@ -17,7 +17,7 @@ function filter(page = 1) {
     }
 
     console.log("Filter parameters:", { league_id, team_id, minPrice, maxPrice, page });
-
+    updateTeamLogoAndName(team_id);
     // Set up AJAX request
     const xhr = new XMLHttpRequest();
     xhr.open('POST', 'helper_functions/filter_product.php', true);
@@ -28,33 +28,33 @@ function filter(page = 1) {
             try {
                 const response = JSON.parse(this.responseText);
                 const products = response.products;
-                const totalProducts = response.totalProducts; // Assuming totalProducts is returned from PHP
+                const totalProducts = response.totalProducts; 
                 console.log("Filtered products:", products);
 
                 let productList = document.getElementById('productList');
-                productList.innerHTML = ''; // Clear existing content
+                productList.innerHTML = ''; 
                 
                 products.forEach(product => {
+                    let outOfStockLabel = '';
+                    let addToCartBtn=false;
+                    if (product.quantity <= 1) {
+                        outOfStockLabel = '<div class="label stockout stockblue">Out Of Stock</div>';
+                        addToCartBtn=true;
+                    }
                     let productHtml = `
                         <div class="col-lg-4 col-md-6">
                             <div class="product__item sale">
                                 <div class="product__item__pic set-bg" style="background-image: url('images/${product.cover || 'img/shop/default.jpg'}')">
-                                    <div class="label">Sale</div>
+                                    ${outOfStockLabel}
                                     <ul class="product__hover">
                                         <li><a href="images/${product.cover || 'img/shop/default.jpg'}" class="image-popup"><span class="arrow_expand"></span></a></li>
                                         <li><a class="addToWishlist" data-product-id="${product.id}"><span class="icon_heart_alt"></span></a></li>
-                                        <li><a class="addToCart" data-product-id="${product.id}"><span class="icon_bag_alt"></span></a></li>
+                                        <li style="${addToCartBtn?"display:none" :""}"><a class="addToCart" data-product-id="${product.id}"><span class="icon_bag_alt"></span></a></li>
                                     </ul>
                                 </div>
                                 <div class="product__item__text">
-                                    <h6><a href="./product-details.html?id=${product.id}">${product.name}</a></h6>
-                                    <div class="rating">
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                    </div>
+                                    <h6><a href="./product-details.php?id=${product.id}">${product.name}</a></h6>
+                                   
                                     <div class="product__price">$${product.price}</div>
                                 </div>
                             </div>
@@ -79,15 +79,16 @@ function filter(page = 1) {
 }
 
 function updatePagination(totalProducts, currentPage) {
-    const perPage = 9; // Number of products per page
+    const perPage = 9; 
     const totalPages = Math.ceil(totalProducts / perPage);
     const paginationDiv = document.querySelector('.pagination__option');
-    paginationDiv.innerHTML = ''; // Clear existing pagination links
+    paginationDiv.innerHTML = '';
 
     for (let page = 1; page <= totalPages; page++) {
         const link = document.createElement('a');
         link.textContent = page;
-        link.onclick = () => filter(page); // Update filter to fetch new page
+        link.href = '#searchForm'; 
+        link.onclick = () => filter(page); 
         if (page === currentPage) {
             link.classList.add('active'); // Add active class to current page
         }
@@ -196,3 +197,44 @@ if (query !== "") {
 }
 });
 
+function ResetPage(){
+    location.reload();
+}
+
+const teamsData = {
+    '1': { name: 'Manchester United', logo: 'img/manchester-united.svg' },
+    '2': { name: 'Real Madrid', logo: 'img/real-madrid.svg' },
+    '3': { name: 'Bayern Munich', logo: 'img/bayern-munchen.svg' },
+    '6': { name: 'Dortmund', logo: 'img/borussia-dortmund-seeklogo.svg' },
+    '7': { name: 'Leverkusen', logo: 'img/Leverkusen.svg' },
+    '8': { name: 'Barcelona', logo: 'img/barcelona.svg' },
+    '9': { name: 'Atletico Madrid', logo: 'img/atletico-madrid.svg' },
+    '10': { name: 'Liverpool', logo: 'img/liverpool.svg' },
+    '11': { name: 'Manchester City', logo: 'img/manchester-city.svg' }
+};
+
+
+function updateTeamLogoAndName(team_id) {
+    const teamData = teamsData[team_id];
+    const brandLogo = document.querySelector('.brand-logo');
+
+    if (teamData) {
+        // Clear any existing content
+        brandLogo.innerHTML = '';
+
+        // Create and set the logo image
+        const logo = document.createElement('img');
+        logo.src = teamData.logo;
+        logo.style.width = '100px';
+
+        // Create and set the team name
+        const teamName = document.createElement('span');
+        teamName.textContent = teamData.name;
+
+        // Append both elements to the brandLogo container
+        brandLogo.appendChild(logo);
+        brandLogo.appendChild(teamName);
+    } else {
+        console.error('Team ID not found in teamsData');
+    }
+}

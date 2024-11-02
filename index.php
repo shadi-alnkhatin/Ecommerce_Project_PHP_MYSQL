@@ -1,4 +1,6 @@
-
+<?php
+include("./classes/products.php");
+?>
 <!DOCTYPE html>
 <html lang="zxx">
 
@@ -25,6 +27,8 @@
     <link rel="stylesheet" href="css/slicknav.min.css" type="text/css">
     <link rel="stylesheet" href="css/style.css" type="text/css">
     <link rel="stylesheet" href="./css/qc.slider.css">
+    <link href="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.css"  rel="stylesheet" />
+
 
 
 </head>
@@ -40,131 +44,7 @@
     <!-- Header Section End -->
 
     <!-- Categories Section Begin -->
-    <section class="slide">
-
-  <div class="slider-container">
-
-    <ul class="slider-wrapper" id="slider">
-
-      <li class="slide-current">
-<img src="./img/1.gif" alt="">
-      </li>
-      <li class="slide-current">
-
-<!-- Image -->
-
-
-<img src="./img/2.gif" alt="">
-<!-- Image Description -->
-
-
-</li>
-<li class="slide-current">
-
-<!-- Image -->
-
-<img src="./img/3.gif" alt="">
-
-
-<!-- Image Description -->
-
-
-</li>
-
-    </ul>
-
-    <!-- Nav controls -->
-
-    <div class="drt-control control-left" id="lft-control"><</div>
-
-    <div class="drt-control control-right" id="rht-control">></div>
-
-    <ul class="slider-controls" id="slider-controls"></ul>
-
-    <!-- Progressbar -->
-
-    <div class="tempo-bar" id="barra"></div>
-
-  </div>
-
-</section>
-
-<!-- Categories Section End -->
-
-<!-- Product Section Begin -->
-<section class="product spad">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-4 col-md-4">
-                <div class="section-title">
-                    <h4>New product</h4>
-                </div>
-            </div>
-            <div class="col-lg-8 col-md-8">
-                <ul class="filter__controls">
-                    <li class="active" data-filter="*">All</li>
-                    <li data-filter=".women">Women’s</li>
-                    <li data-filter=".men">Men’s</li>
-                    <li data-filter=".kid">Kid’s</li>
-                    <li data-filter=".accessories">Accessories</li>
-                    <li data-filter=".cosmetic">Cosmetics</li>
-                </ul>
-            </div>
-        </div>
-        <div class="row property__gallery" id="productList">
-            
-
-            <?php
-            $dbName = "ecommerce_db";
-            $userName = "root";
-            $server = "localhost";
-            $password = "";
-            
-            try {
-                $conn = new PDO("mysql:host=$server;dbname=$dbName", $userName, $password);
-                $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            } catch (PDOException $hello ) {
-                die("Connection failed: " . $e->getMessage());
-            }
-            $query="SELECT `id`, `name`, `description`, `cover`,`price` FROM `products`  ";
-            $stmt = $conn->prepare($query);
-            $stmt->execute();
-            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            
-            foreach ($result as $row) {
-                echo '
-                <div class="col-lg-3 col-md-4 col-sm-6 mix women men kid accessories cosmetic">
-                    <div class="product__item">
-                        <div class="product__item__pic set-bg" data-setbg="images/' . htmlspecialchars($row['cover']) . '"> 
-                            <ul class="product__hover">
-                                <li><a href="images/' . htmlspecialchars($row['cover']) . '" class="image-popup"><span class="arrow_expand"></span></a></li>
-                                <li><a class="addToWishlist" data-product-id="'.htmlspecialchars($row['id']).'"><span class="icon_heart_alt"></span></a></li>
-                                <li><a class="addToCart"  data-product-id="'.htmlspecialchars($row['id']).'"><span class="icon_bag_alt"></span></a></li>
-                            </ul>
-                        </div>
-                        <div class="product__item__text">
-                            <h6><a href="#">' . htmlspecialchars($row['name']) . '</a></h6>
-                            <div class="rating">
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                            </div>
-                            <div class="product__price">$' . htmlspecialchars($row['price']) . '</div>
-                        </div>
-                    </div>
-                </div>';
-            }
-            
-            ?>
-           
-        </div>
-    </div>
-</section>
-<!-- Product Section End -->
-
-<!-- Banner Section Begin -->
+    <!-- Banner Section Begin -->
 <section class="banner set-bg" data-setbg="img/football2.jpg">
 <div class="banner__overlay"></div> <!-- Overlay div -->
 
@@ -197,6 +77,66 @@
         </div>
     </div>
 </section>
+<!-- Categories Section End -->
+
+<!-- Product Section Begin -->
+<section class="product spad ">
+    <div class="container ">
+        <div class="row">
+            <div class="col-lg-4 col-md-4">
+                <div class="section-title">
+                    <h4>New product</h4>
+                </div>
+            </div>
+           
+        </div>
+        <div class="row property__gallery " id="productList">
+            
+
+            <?php
+            $product=new Product($db);
+            $result=$product->getProducts();
+
+            
+            foreach ($result as $row) {   ?>
+               
+                <div class="col-lg-3 col-md-4 col-sm-6 mix women men kid accessories cosmetic">
+                    <div class="product__item">
+                        <div class="product__item__pic set-bg" data-setbg="images/<?php echo $row['cover']; ?>"> 
+                            
+                                <?php
+                                if($row['quantity']<=1){
+                                    echo'<div class="label stockout stockblue">Out Of Stock</div>';
+                                }
+                                
+                                ?>
+                            <ul class="product__hover">
+                                <li><a href="images/<?php echo $row['cover']; ?>" class="image-popup"><span class="arrow_expand"></span></a></li>
+                                <li><a class="addToWishlist" data-product-id="<?php echo $row['id']; ?>"><span class="icon_heart_alt"></span></a></li>
+                               <?php
+                                if(!($row['quantity']<=1)){
+                                   echo' <li><a class="addToCart"   data-product-id="'.$row['id'].'"><span class="icon_bag_alt"></span></a></li>';
+                                }
+                               ?>
+                            </ul>
+                        </div>
+                        <div class="product__item__text">
+                            <h6><a href="#"><?php echo $row['name']; ?></a></h6>
+                            
+                            <div class="product__price">$<?php echo $row['price'] ?></div>
+                        </div>
+                    </div>
+                </div>
+          <?php  }
+            
+            ?>
+           
+        </div>
+    </div>
+</section>
+<!-- Product Section End -->
+
+
 <!-- Banner Section End -->
 
 <!-- Trend Section Begin -->
@@ -472,6 +412,8 @@
 <script src="js/main.js"></script>
 <script src="js/add_to_cart.js"></script>
 <script src="./js/qcslider.jquery.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
+
 <script>
     var isLoggedIn = <?php echo isset($_SESSION['user_id']) ? 'true' : 'false'; ?>;
     $(document).ready(function($){

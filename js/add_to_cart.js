@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (xhr.status === 200) {
                         $.notify("Product added to cart!",{className: "success", 
                             position: "top center"});
-                        //reloadNavbar(); 
+                        reloadNavbar(); 
                     } else {
                         $.notify('Failed to add product to cart.');
                     }
@@ -59,10 +59,45 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
                     const response = JSON.parse(xhr.responseText);
                     if (response.success) {
-                        $.notify("Product added to wishlist", "success");
+                        $.notify("Product added to wishlist", {className: "success", 
+                            position: "top center"});
+                            reloadNavbar();
                        
                     } else {
-                        $.notify('Product already in wishlist.');
+                        $.notify('Product already in wishlist.',{position:"top center"});
+                    }
+                }
+            };
+
+                xhr.send('product_id=' + encodeURIComponent(productId));
+            });
+        });
+
+        document.querySelectorAll(".delete-wishlist-item").forEach(button => {
+            button.addEventListener("click", function () {
+
+                if (!isLoggedIn) {
+                    $.notify('Please log in to add items to your cart.', { className: 'info', position: 'top center' });
+                    return; }
+                const productId = this.getAttribute('data-product-id');
+
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', 'helper_functions/remove_wishlist_item.php', true);
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+                xhr.onreadystatechange = function() {
+                if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                    const response = JSON.parse(xhr.responseText);
+                    console.log(response);
+                    if (response.success) {
+                        $.notify("Product added to wishlist", {className: "success", 
+                            position: "top center"});
+
+                            reloadNavbar(); 
+                            setTimeout(() => location.reload(), 500);
+                       
+                    } else {
+                        $.notify('Product already in wishlist.',{position:"top center"});
                     }
                 }
             };

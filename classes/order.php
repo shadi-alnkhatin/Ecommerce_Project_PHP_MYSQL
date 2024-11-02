@@ -14,7 +14,6 @@ class Order {
         try {
             $this->db->beginTransaction();
 
-            // Retrieve total price from cart
             $cart = new Cart($this->db, $this->user_id);
             $total_price = isset($_SESSION['discountTotal'])? $_SESSION['discountTotal']: $cart->calculateTotal();
             if ($total_price <= 0) {
@@ -64,10 +63,9 @@ class Order {
         }
     
         try {
-            // Begin transaction
+         
     
             foreach ($items as $item) {
-                // Debugging output for checking values
                 error_log("Order ID: $order_id");
                 error_log("Product ID: " . $item['id']);
                 error_log("Quantity: " . $item['quantity']);
@@ -85,16 +83,23 @@ class Order {
     
                 if (!$stmt->execute()) {
                     throw new Exception("Failed to insert item {$item['id']} into order_items.");
+                } else {
+                    // Update product quantity based on the ordered quantity
+                    $stmt = $this->db->prepare("UPDATE products SET quantity = quantity - :quantity WHERE id = :id");
+                    $stmt->bindParam(':quantity', $item['quantity']);
+                    $stmt->bindParam(':id', $item['id']);
+    
+                    if (!$stmt->execute()) {
+                        throw new Exception("Failed to update stock for product ID: {$item['id']}");
+                    }
                 }
             }
     
-            // Clear cart after successful insertion of all items
             $cart->clearCart($items[0]["cart_id"]);
     
-            // Commit transaction
     
         } catch (Exception $e) {
-            // Roll back transaction on failure
+
             error_log($e->getMessage());
             die("Failed to add items to the order. Please try again.");
         }

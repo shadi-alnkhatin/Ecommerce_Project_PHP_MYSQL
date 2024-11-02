@@ -437,9 +437,16 @@ include ('./classes/cart.php');
     },
     onApprove: function(data, actions) {
                 return actions.order.capture().then(function(details) {
-                    alert('Transaction completed by ' + details.payer.name.given_name);
+                    // alert('Transaction completed by ' + details.payer.name.given_name);
+                    // Place your success logic here, such as redirecting to a success page or displaying a success message.
+                    console.log('Transaction completed by'+ details.payer.name.given_name);
+                    //print order id 
 
-                    // Send the order details to the backend for confirmation
+                    window.location.href = './thanks.html'; // Redirect to order success page
+                
+                    
+
+                   
                 fetch('./confirm_payment.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },

@@ -3,12 +3,15 @@
 include("./helper_functions/isLoggedIn.php");
 include("./classes/database.php");
 include('./classes/cart.php');
+include('./classes/wishlist.php');
 
 $database = new Database();
 $db = $database->connect();
 if(isLoggedIn()){
     $cart = new Cart($db,$_SESSION['user_id']);
     $cart_items_number = $cart->ItemsNumberInCart();
+    $wishlist=new Wishlist($db,$_SESSION['user_id']);
+    $wishlist_items_number=$wishlist->total_wishlist();
 }
 ?>
 <div id="navbar-content">
@@ -18,10 +21,10 @@ if(isLoggedIn()){
         <ul class="offcanvas__widget">
             <li><span class="icon_search search-switch"></span></li>
             <li><a href="./wishlist.php"><span class="icon_heart_alt"></span>
-                <div class="tip"></div>
+                <div class="tip"><?php if(isLoggedIn()){echo($wishlist_items_number);}else{echo '0';} ?></div>
             </a></li>
             <li><a href="./shop-cart.php"><span class="icon_bag_alt"></span>
-                <div class="tip tip_cart"><?php if(isLoggedIn()){echo($cart_items_number);} ?></div>
+                <div class="tip tip_cart"><?php if(isLoggedIn()){echo($cart_items_number);}else{echo '0';} ?></div>
             </a></li>
         </ul>
         <div class="offcanvas__logo">
@@ -55,9 +58,11 @@ if(isLoggedIn()){
                 <div class="col-lg-6 col-md-4">
                 <nav class="header__menu text-center">
                     <ul class="d-flex justify-content-center mb-0 list-unstyled">
-                        <li class="mx-3"><a href="./index.php" class="text-decoration-none">Home</a></li>
-                        <li class="mx-3"><a href="./shop.php" class="text-decoration-none">Shop</a></li>
-                        <li class="mx-3"><a href="./contact.html" class="text-decoration-none">Contact</a></li>
+                        <li class="mx-3 nav-link"><a href="./index.php" class="text-decoration-none">Home</a></li>
+                        <li class="mx-3 nav-link"><a href="./shop.php" class="text-decoration-none">Shop</a></li>
+                        <li class="mx-3 nav-link"><a href="./contact.php" class="text-decoration-none">Contact</a></li>
+                        <li class="mx-3 nav-link"><a href="./aboutus.php" class="text-decoration-none">About</a></li>
+
                     </ul>
                 </nav>
             </div>
@@ -74,10 +79,10 @@ if(isLoggedIn()){
                         <ul class="header__right__widget">
                             
                             <li><a href="#"><span class="icon_heart_alt"></span>
-                                <div class="tip">2</div>
+                                <div class="tip"><?php if(isLoggedIn()){echo($wishlist_items_number);}else{echo '0';} ?></div>
                             </a></li>
                             <li><a href="./shop-cart.php"><span class="icon_bag_alt"></span>
-                                <div class="tip tip_cart"><?php if(isLoggedIn()){echo($cart_items_number);} ?></div>
+                                <div class="tip tip_cart"><?php if(isLoggedIn()){echo($cart_items_number);}else{echo '0';} ?></div>
                             </a></li>
                         </ul>
                     </div>

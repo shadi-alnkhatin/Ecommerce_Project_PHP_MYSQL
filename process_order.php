@@ -26,8 +26,8 @@ if (isset($_POST['place_order'])) {
         die("Order processing failed.");
     }
 
-    // Debug: Display the order ID for confirmation
-    echo "Order ID: $order_id";
+
+    header("Location:thanks.html");
     exit;
 }
 ?>

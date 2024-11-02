@@ -22,7 +22,7 @@
 
             <div class="col-sm-6 form">
                 <div class="login form-peice switched">
-                    <form class="login-form" action="signin.php" method="post">
+                    <form id="loginForm" class="login-form"  method="post">
                         <div class="form-group">
                             <h1>Sign In!</h1>
                             <label for="email">Email Address</label>
@@ -40,7 +40,7 @@
                 </div>
 
                 <div class="signup form-peice">
-                    <form class="signup-form" action="signup.php" method="post">
+                    <form class="signup-form" id="registerForm"  method="post">
                         <div class="form-group">
                             <h3>Sign Up!</h3>
                             <label for="user_name">Full Name</label>
@@ -72,7 +72,11 @@
                             <label for="city">City</label>
                             <input type="text" name="city" id="city" required>
                         </div>
-                                                <div class="form-group">
+                        <div class="form-group">
+                            <label for="address">Address</label>
+                            <input type="text" name="address" id="address" required>
+                        </div>
+                        <div class="form-group">
                             <label for="phone">Phone Number - <small>Optional</small></label>
                             <input type="tel" name="phone_number" id="phone" pattern="[0-9]{10,14}">
                         </div>
@@ -88,6 +92,7 @@
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js'></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js'></script>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
@@ -190,6 +195,95 @@
             }
         });
     });
+
+
+
+
+document.getElementById("loginForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const formData = new FormData(this);
+
+    fetch("helper_functions/signin.php", {
+        method: "POST",
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === "success") {
+            Swal.fire({
+                position: 'top-end',
+                icon: 'success',
+                title: data.message,
+                showConfirmButton: false,
+                timer: 1500
+            }).then(() => {
+                window.location.href = './index.php';
+            });
+        } else {
+            Swal.fire({
+                position: 'top-end',
+                icon: 'error',
+                title: data.message,
+                confirmButtonText: 'OK'
+            });
+        }
+    })
+    .catch(error => console.error("Error:", error));
+});
+
+
+
+document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('registerForm').addEventListener('submit', function (e) {
+        e.preventDefault(); // Prevent form from submitting normally
+
+        // Gather form data
+        const formData = new FormData(this);
+
+        // AJAX request
+        fetch('helper_functions/signup.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Display success message
+                Swal.fire({
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'Success',
+                    text: data.message,
+                    confirmButtonText: 'Go to Home'
+                }).then(() => {
+                    window.location.href = './index.php';
+                });
+            } else {
+                // Display error message
+                Swal.fire({
+                    position: 'top-end',
+                    icon: 'error',
+                    title: 'Error',
+                    text: data.message,
+                    confirmButtonText: 'Try Again'
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            Swal.fire({
+                position: 'top-end',
+                icon: 'error',
+                title: 'Error',
+                text: 'Something went wrong! Please try again later.',
+                confirmButtonText: 'OK'
+            });
+        });
+    });
+});
+
+
 </script>
 </body>
 </html>
