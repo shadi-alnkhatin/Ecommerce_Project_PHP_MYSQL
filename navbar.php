@@ -19,7 +19,7 @@ if(isLoggedIn()){
     <div class="offcanvas-menu-wrapper">
         <div class="offcanvas__close">+</div>
         <ul class="offcanvas__widget">
-            <li><span class="icon_search search-switch"></span></li>
+            
             <li><a href="./wishlist.php"><span class="icon_heart_alt"></span>
                 <div class="tip"><?php if(isLoggedIn()){echo($wishlist_items_number);}else{echo '0';} ?></div>
             </a></li>
@@ -28,12 +28,14 @@ if(isLoggedIn()){
             </a></li>
         </ul>
         <div class="offcanvas__logo">
-            <a href="./index.php"><img src="img/logo.png" alt=""></a>
+            <a href="./index.php"><img src="img/logo2.PNG" alt=""></a>
         </div>
         <div id="mobile-menu-wrap"></div>
         <div class="offcanvas__auth">
+
             <?php if(isLoggedIn()){
                 echo '<a href="./logout.php">Logout</a>';
+                echo'<a href="./profile.php">Profile</a>';
             } else{
                echo' <a href="./register.php">Login</a> <a href="./register.php">Register</a>';
             }
@@ -70,15 +72,17 @@ if(isLoggedIn()){
                     <div class="header__right">
                         <div class="header__right__auth">
                         <?php if(isLoggedIn()){
-                         echo '<a href="./logout.php">Logout</a>';
+                         echo '<a href="./logout.php">Logout</a> ';
+                         echo'<a href="./profile.php">Profile</a>';
                          } else{
                             echo' <a href="./register.php">Login</a> <a href="./register.php">Register</a>';
+                           
                          }
                          ?>
                         </div>
                         <ul class="header__right__widget">
                             
-                            <li><a href="#"><span class="icon_heart_alt"></span>
+                            <li><a href="./wishlist.php"><span class="icon_heart_alt"></span>
                                 <div class="tip"><?php if(isLoggedIn()){echo($wishlist_items_number);}else{echo '0';} ?></div>
                             </a></li>
                             <li><a href="./shop-cart.php"><span class="icon_bag_alt"></span>

@@ -43,6 +43,8 @@ $orderDetails = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Order Details</title>
+    <link rel="icon" href="./img/icon.svg">
+
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <style>
@@ -123,7 +125,7 @@ $orderDetails = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                             $activeClass = $index === 0 ? 'active' : '';
                                         ?>
                                             <div class="carousel-item <?= $activeClass ?>">
-                                                <img src="images/<?= htmlspecialchars($image['image_url']) ?>" alt="Product Image" class="product-image d-block w-100">
+                                                <img src="admin_dashboard/images/<?= htmlspecialchars($image['image_url']) ?>" alt="Product Image" class="product-image d-block w-100">
                                             </div>
                                         <?php endforeach; ?>
                                     </div>

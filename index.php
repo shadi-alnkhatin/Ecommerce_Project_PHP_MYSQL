@@ -10,7 +10,9 @@ include("./classes/products.php");
     <meta name="keywords" content="Ashion, unica, creative, html">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Ashion | Template</title>
+    <title>Home</title>
+    <link rel="icon" href="./img/icon.svg">
+
 
     <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Cookie&display=swap" rel="stylesheet">
@@ -39,12 +41,7 @@ include("./classes/products.php");
         <div class="loader"></div>
     </div>
         <?php include('./navbar.php');?>
-    <!-- Offcanvas Menu Begin -->
-   
-    <!-- Header Section End -->
 
-    <!-- Categories Section Begin -->
-    <!-- Banner Section Begin -->
 <section class="banner set-bg" data-setbg="img/football2.jpg">
 <div class="banner__overlay"></div> <!-- Overlay div -->
 
@@ -95,14 +92,15 @@ include("./classes/products.php");
 
             <?php
             $product=new Product($db);
-            $result=$product->getProducts();
+            $result=$product->getLatestProducts();
 
             
             foreach ($result as $row) {   ?>
                
                 <div class="col-lg-3 col-md-4 col-sm-6 mix women men kid accessories cosmetic">
                     <div class="product__item">
-                        <div class="product__item__pic set-bg" data-setbg="images/<?php echo $row['cover']; ?>"> 
+                        <div class="product__item__pic set-bg" data-setbg="admin_dashboard/images/<?php echo $row['cover']; ?>"> 
+                        <div class="label new">New</div>
                             
                                 <?php
                                 if($row['quantity']<=1){
@@ -111,7 +109,7 @@ include("./classes/products.php");
                                 
                                 ?>
                             <ul class="product__hover">
-                                <li><a href="images/<?php echo $row['cover']; ?>" class="image-popup"><span class="arrow_expand"></span></a></li>
+                                <li><a href="admin_dashboard/images/<?php echo $row['cover']; ?>" class="image-popup"><span class="arrow_expand"></span></a></li>
                                 <li><a class="addToWishlist" data-product-id="<?php echo $row['id']; ?>"><span class="icon_heart_alt"></span></a></li>
                                <?php
                                 if(!($row['quantity']<=1)){
@@ -121,7 +119,7 @@ include("./classes/products.php");
                             </ul>
                         </div>
                         <div class="product__item__text">
-                            <h6><a href="#"><?php echo $row['name']; ?></a></h6>
+                            <h6><a href="./product-details.php?id=<?php echo $row['id'] ?>"><?php echo $row['name']; ?></a></h6>
                             
                             <div class="product__price">$<?php echo $row['price'] ?></div>
                         </div>
@@ -139,178 +137,6 @@ include("./classes/products.php");
 
 <!-- Banner Section End -->
 
-<!-- Trend Section Begin -->
-<section class="trend spad">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-4 col-md-4 col-sm-6">
-                <div class="trend__content">
-                    <div class="section-title">
-                        <h4>Hot Trend</h4>
-                    </div>
-                    <div class="trend__item">
-                        <div class="trend__item__pic">
-                            <img src="img/trend/ht-1.jpg" alt="">
-                        </div>
-                        <div class="trend__item__text">
-                            <h6>Chain bucket bag</h6>
-                            <div class="rating">
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                            </div>
-                            <div class="product__price">$ 59.0</div>
-                        </div>
-                    </div>
-                    <div class="trend__item">
-                        <div class="trend__item__pic">
-                            <img src="img/trend/ht-2.jpg" alt="">
-                        </div>
-                        <div class="trend__item__text">
-                            <h6>Pendant earrings</h6>
-                            <div class="rating">
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                            </div>
-                            <div class="product__price">$ 59.0</div>
-                        </div>
-                    </div>
-                    <div class="trend__item">
-                        <div class="trend__item__pic">
-                            <img src="img/trend/ht-3.jpg" alt="">
-                        </div>
-                        <div class="trend__item__text">
-                            <h6>Cotton T-Shirt</h6>
-                            <div class="rating">
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                            </div>
-                            <div class="product__price">$ 59.0</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-4 col-sm-6">
-                <div class="trend__content">
-                    <div class="section-title">
-                        <h4>Best seller</h4>
-                    </div>
-                    <div class="trend__item">
-                        <div class="trend__item__pic">
-                            <img src="img/trend/bs-1.jpg" alt="">
-                        </div>
-                        <div class="trend__item__text">
-                            <h6>Cotton T-Shirt</h6>
-                            <div class="rating">
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                            </div>
-                            <div class="product__price">$ 59.0</div>
-                        </div>
-                    </div>
-                    <div class="trend__item">
-                        <div class="trend__item__pic">
-                            <img src="img/trend/bs-2.jpg" alt="">
-                        </div>
-                        <div class="trend__item__text">
-                            <h6>Zip-pockets pebbled tote <br />briefcase</h6>
-                            <div class="rating">
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                            </div>
-                            <div class="product__price">$ 59.0</div>
-                        </div>
-                    </div>
-                    <div class="trend__item">
-                        <div class="trend__item__pic">
-                            <img src="img/trend/bs-3.jpg" alt="">
-                        </div>
-                        <div class="trend__item__text">
-                            <h6>Round leather bag</h6>
-                            <div class="rating">
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                            </div>
-                            <div class="product__price">$ 59.0</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-4 col-sm-6">
-                <div class="trend__content">
-                    <div class="section-title">
-                        <h4>Feature</h4>
-                    </div>
-                    <div class="trend__item">
-                        <div class="trend__item__pic">
-                            <img src="img/trend/f-1.jpg" alt="">
-                        </div>
-                        <div class="trend__item__text">
-                            <h6>Bow wrap skirt</h6>
-                            <div class="rating">
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                            </div>
-                            <div class="product__price">$ 59.0</div>
-                        </div>
-                    </div>
-                    <div class="trend__item">
-                        <div class="trend__item__pic">
-                            <img src="img/trend/f-2.jpg" alt="">
-                        </div>
-                        <div class="trend__item__text">
-                            <h6>Metallic earrings</h6>
-                            <div class="rating">
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                            </div>
-                            <div class="product__price">$ 59.0</div>
-                        </div>
-                    </div>
-                    <div class="trend__item">
-                        <div class="trend__item__pic">
-                            <img src="img/trend/f-3.jpg" alt="">
-                        </div>
-                        <div class="trend__item__text">
-                            <h6>Flap cross-body bag</h6>
-                            <div class="rating">
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                            </div>
-                            <div class="product__price">$ 59.0</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
 <!-- Trend Section End -->
 
 <!-- Discount Section Begin -->
@@ -319,7 +145,7 @@ include("./classes/products.php");
         <div class="row">
             <div class="col-lg-6 p-0">
                 <div class="discount__pic">
-                    <img src="img/discount.jpg" alt="">
+                    <img src="img/coupon2.png" alt=""  >
                 </div>
             </div>
             <div class="col-lg-6 p-0">
@@ -327,7 +153,8 @@ include("./classes/products.php");
                     <div class="discount__text__title">
                         <span>Discount</span>
                         <h2>2024</h2>
-                        <h5><span>Sale</span> 20%</h5>
+                        <h5 class="mb-2"><span></span> </h5>
+                        <h4><span> </span></h4>
                     </div>
                     <div class="discount__countdown" id="countdown-time">
                         <div class="countdown__item">
@@ -390,6 +217,7 @@ include("./classes/products.php");
         </div>
     </div>
 </section>
+<?php include('./footer.php'); ?>
 <!-- Services Section End -->
 
 

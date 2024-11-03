@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", function() {
     });
   
     function fetchCountries(countrySelect) {
-      fetch("https://restcountries.com/v3.1/all")
+     fetch("https://restcountries.com/v3.1/all")
         .then((response) => {
           if (!response.ok) throw new Error("Network response was not ok");
           console.log(response.json());

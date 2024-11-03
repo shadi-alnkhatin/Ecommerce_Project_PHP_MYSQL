@@ -46,6 +46,7 @@ section#formHolder {
   padding: 10px 0;
 }
 .signup{
+ 
   padding-top: 20px;
   padding-bottom: 20px;
 }
@@ -150,7 +151,7 @@ section#formHolder {
 .form .form-peice {
   background-color:#ffff;
 
-  min-height: 650px;
+  min-height: 690px;
   margin-top: 10px;
   box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);
   color: #454242;
@@ -180,6 +181,7 @@ section#formHolder {
   margin-bottom: 5px;
   position: relative;
 }
+
 .form form .form-group.hasError input {
   border-color: #f95959 !important;
 }
@@ -329,7 +331,7 @@ footer p a:hover, footer p a:focus:hover {
   }
   section#formHolder .form .form-peice > form {
     width: 100% !important;
-    padding: 60px;
+    padding: 80px;
     left: 50%;
     margin-bottom: 10%;
 

@@ -528,7 +528,7 @@ ol {
 -----------------------*/
 
 .banner {
-	height: 1000px;
+	height: 650px;
 }
 
 .banner__text span {
@@ -664,7 +664,7 @@ ol {
 
 .discount__pic img {
 	min-width: 100%;
-	height: 100%;
+	height: 390px;
 }
 
 .discount__text {

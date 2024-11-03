@@ -9,9 +9,10 @@ class Product {
 
     
     public function getProducts($page = 1, $league_id = null, $team_id = null, $minPrice = null, $maxPrice = null, $size = null, $perPage = 9) {
-        $query = "SELECT p.* FROM products p 
-                  LEFT JOIN product_attributes pa ON p.id = pa.product_id 
-                  WHERE 1=1";
+        $query = "SELECT DISTINCT p.*
+        FROM products p 
+        LEFT JOIN product_attributes pa ON p.id = pa.product_id 
+        WHERE p.deleted = 0 ";
         
         if ($league_id !== null) {
             $query .= " AND p.league_id = :league_id";
@@ -26,13 +27,15 @@ class Product {
             $query .= " AND p.price <= :maxPrice";
         }
         if ($size !== null) {
-            $query .= " AND pa.size = :size"; // Add size condition
+            $query .= " AND pa.size = :size";
         }
     
+       
+        
         // Calculate offset for pagination
         $offset = max(0, ($page - 1) * $perPage);
-        $query .= " LIMIT :offset, :limit";
-        
+        $query .= " LIMIT $offset, $perPage"; // Append directly for LIMIT
+    
         $stmt = $this->db->prepare($query);
     
         // Bind parameters if they are set
@@ -40,19 +43,35 @@ class Product {
         if ($team_id !== null) $stmt->bindParam(':team_id', $team_id, PDO::PARAM_INT);
         if ($minPrice !== null) $stmt->bindParam(':minPrice', $minPrice, PDO::PARAM_STR);
         if ($maxPrice !== null) $stmt->bindParam(':maxPrice', $maxPrice, PDO::PARAM_STR);
-        if ($size !== null) $stmt->bindParam(':size', $size, PDO::PARAM_STR); // Bind size parameter
-    
-        // Bind offset and limit with integer parameters
-        $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
-        $stmt->bindParam(':limit', $perPage, PDO::PARAM_INT);
+        if ($size !== null) $stmt->bindParam(':size', $size, PDO::PARAM_STR);
     
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    
+    
     // [1->id=1,name=real madrid .....]
+
+    public function getLatestProducts($limit = 8) {
+        // Basic query to select products ordered by latest entries
+        $query = "SELECT * FROM products WHERE deleted = 0 ORDER BY id DESC LIMIT :limit";
+        
+        // Prepare the statement
+        $stmt = $this->db->prepare($query);
+        
+  
+        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+        
+        // Execute the statement
+        $stmt->execute();
+        
+        // Fetch the results
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
     
     public function getProductsDetails($product_id){
-        $stmt = $this->db->prepare("SELECT * FROM products  WHERE id = :product_id ");
+        $stmt = $this->db->prepare("SELECT * FROM products  WHERE id = :product_id And deleted=0");
         $stmt->bindParam(':product_id', $product_id);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);

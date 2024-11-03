@@ -1,30 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize jQuery quantity increment/decrement buttons
-    $(document).ready(function() {
-        var proQty = $('.pro-qty');
-        proQty.prepend('<span class="dec qtybtn">-</span>');
-        proQty.append('<span class="inc qtybtn">+</span>');
-
-        // Handle clicks on custom quantity buttons
-        proQty.on('click', '.qtybtn', function() {
-            var $button = $(this);
-            var $input = $button.siblings('input');
-            var oldValue = parseInt($input.val());
-            var newVal;
-
-            if ($button.hasClass('inc')) {
-                newVal = oldValue + 1;
-            } else {
-                newVal = Math.max(1, oldValue - 1); // Ensure quantity doesn’t go below 1
-            }
-
-            $input.val(newVal);
-            $input.trigger('change'); // Trigger change event after updating quantity
-
-            // Directly call update function to ensure server is notified
-            updateCart($input);
-        });
-    });
+    
 
     // Function to handle quantity change event and send AJAX request
     function updateCart(input) {

@@ -61,8 +61,8 @@ class CRUD extends connection{
                         <td>$user[city]</td>
                         <td>$roleLabel</td>
                         <td>
-                            <a href='#' class='btn btn-primary' data-bs-toggle='modal' data-bs-target='#editModal-$user[id]'>Edit</a>
-                            <a href='#' class='btn btn-danger' data-bs-toggle='modal' data-bs-target='#deleteModal-$user[id]'>Delete</a>
+                            <a href='#' class='btn btn-primary my-3 w-100' data-bs-toggle='modal' data-bs-target='#editModal-$user[id]'>Edit</a>
+                            <a href='#' class='btn btn-danger w-100' data-bs-toggle='modal' data-bs-target='#deleteModal-$user[id]'>Delete</a>
                         </td>
                     </tr>";
     
@@ -98,7 +98,7 @@ class CRUD extends connection{
                                         <label for='address_line_2' class='form-label'>Address line 2</label>
                                         <input type='text' name='address_line_2' class='form-control' value='$user[address_line_2]' maxlength='200'>
                                     </div>
-                                    $country
+                                    
                                     <div class='mb-3'>
                                     <label for='city' class='form-label'>City Name</label>
                                     <input type='text' id='city' name='city' class='form-control' min='1' max='3' value='{$user['city']}' required>
@@ -207,7 +207,7 @@ class CRUD extends connection{
 
                     // Prepare the update query
                         $query = "UPDATE `users` SET `user_name` = :user_name, `email` = :email, `phone_number` = :phone_number,
-                        `address_line_1` = :address_line_1, `address_line_2` = :address_line_2, `country` = :country,`city` = :city, `role` = :role WHERE `id`
+                        `address_line_1` = :address_line_1, `address_line_2` = :address_line_2,`city` = :city, `role` = :role WHERE `id`
                         = :id";
 
                         $statement = $this->dbconnection->prepare($query);
@@ -216,7 +216,6 @@ class CRUD extends connection{
                         $statement->bindParam(':phone_number', $phone_number);
                         $statement->bindParam(':address_line_1', $address_line_1);
                         $statement->bindParam(':address_line_2', $address_line_2);
-                        $statement->bindParam(':country', $country);
                         $statement->bindParam(':city', $city);
                         $statement->bindParam(':role', $role);
                         $statement->bindParam(':id', $id);

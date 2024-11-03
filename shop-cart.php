@@ -8,8 +8,8 @@
     <meta name="keywords" content="Ashion, unica, creative, html">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Ashion | Template</title>
-
+    <title>Shop Cart</title>
+    <link rel="icon" href="./img/icon.svg">
     <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Cookie&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap"
@@ -44,6 +44,7 @@
     width: 100%; /* Ensures the table takes full width */
     min-width: 600px; /* Adjust based on the minimum width needed for your table */
 }
+
 
 }
     </style>
@@ -118,7 +119,7 @@
                             ?>
                                             <tr data-product-id="<?php echo $item['id']; ?>">
                                                 <td class="cart__product__item mr-3">
-                                                    <img src="images/<?php echo $item['cover'] ?>" alt="" width="60px">
+                                                    <img src="admin_dashboard/images/<?php echo $item['cover'] ?>" alt="" width="60px">
                                                     <div class="cart__product__item__title">
                                                         <h6 class="truncate-multi-line "><?php echo $item['name']; ?></h6>
                                                     </div>
@@ -131,8 +132,8 @@
                                                 </td>
                                                 <td class="cart__price">$<?php echo $item['product_price']; ?></td>
                                                 <td class="cart__quantity">
-                                                    <div class="pro-qty">
-                                                        <input type="number" class="quantity-input" value="<?php echo $item['quantity']; ?>" min="1">
+                                                    <div class="">
+                                                        <input type="number" class="quantity-input form-control" style="width: 65px;" value="<?php echo $item['quantity']; ?>" min="1">
                                                     </div>
 
 

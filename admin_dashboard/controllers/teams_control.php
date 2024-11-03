@@ -20,8 +20,8 @@ class CRUD extends Connection {
                         <td>{$team['description']}</td>
                         <td>{$team['league_name']}</td> <!-- Display League Name -->
                         <td>
-                            <a href='#' class='btn btn-primary' data-bs-toggle='modal' data-bs-target='#editModal-{$team['id']}'>Edit</a>
-                            <a href='#' class='btn btn-danger' data-bs-toggle='modal' data-bs-target='#deleteModal-{$team['id']}'>Delete</a>
+                            <a href='#' class='btn btn-primary my-3 w-100' data-bs-toggle='modal' data-bs-target='#editModal-{$team['id']}'>Edit</a>
+                            <a href='#' class='btn btn-danger w-100' data-bs-toggle='modal' data-bs-target='#deleteModal-{$team['id']}'>Delete</a>
                         </td>
                     </tr>";
     

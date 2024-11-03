@@ -1,4 +1,4 @@
-
+var outOfStockLabel = '';
 function filter(page = 1) {
     const league_id = document.getElementById('leagueSelect').value;
     const team_id = document.getElementById('teamSelect').value;
@@ -35,7 +35,7 @@ function filter(page = 1) {
                 productList.innerHTML = ''; 
                 
                 products.forEach(product => {
-                    let outOfStockLabel = '';
+                     outOfStockLabel = '';
                     let addToCartBtn=false;
                     if (product.quantity <= 1) {
                         outOfStockLabel = '<div class="label stockout stockblue">Out Of Stock</div>';
@@ -44,10 +44,10 @@ function filter(page = 1) {
                     let productHtml = `
                         <div class="col-lg-4 col-md-6">
                             <div class="product__item sale">
-                                <div class="product__item__pic set-bg" style="background-image: url('images/${product.cover || 'img/shop/default.jpg'}')">
+                                <div class="product__item__pic set-bg" style="background-image: url('admin_dashboard/images/${product.cover || 'img/shop/default.jpg'}')">
                                     ${outOfStockLabel}
                                     <ul class="product__hover">
-                                        <li><a href="images/${product.cover || 'img/shop/default.jpg'}" class="image-popup"><span class="arrow_expand"></span></a></li>
+                                        <li><a href="admin_dashboard/images/${product.cover || 'img/shop/default.jpg'}" class="image-popup"><span class="arrow_expand"></span></a></li>
                                         <li><a class="addToWishlist" data-product-id="${product.id}"><span class="icon_heart_alt"></span></a></li>
                                         <li style="${addToCartBtn?"display:none" :""}"><a class="addToCart" data-product-id="${product.id}"><span class="icon_bag_alt"></span></a></li>
                                     </ul>
@@ -65,6 +65,16 @@ function filter(page = 1) {
 
                 // Update pagination
                 updatePagination(totalProducts, page);
+                document.querySelectorAll('.addToWishlist').forEach(function(button) {
+                    button.addEventListener('click', function() {
+                        addToWishlistHandler(this); // Call the handler function
+                    });
+                });
+                document.querySelectorAll('.addToCart').forEach(function(button) {
+                    button.addEventListener('click', function() {
+                        addToCartHandler(this); // Call the handler function
+                    });
+                });
 
             } catch (error) {
                 console.error("Failed to parse JSON response:", error, this.responseText);
@@ -150,37 +160,53 @@ if (query !== "") {
                     const products = response.products;
                     let productList = document.getElementById('productList');
                     productList.innerHTML = ''; 
+                    const paginationDiv = document.querySelector('.pagination__option');
+                    paginationDiv.innerHTML = '';
 
                     // Render products
                     products.forEach(element => {
+
+                        outOfStockLabel = '';
+                        let addToCartBtn=false;
+                        if (element.quantity <= 1) {
+                        outOfStockLabel = '<div class="label stockout stockblue">Out Of Stock</div>';
+                        addToCartBtn=true;
+                            }
                         let productHtml = `
                             <div class="col-lg-4 col-md-6">
                                 <div class="product__item sale">
-                                    <div class="product__item__pic set-bg" style="background-image: url('images/${element.cover || 'img/shop/default.jpg'}')">
-                                        <div class="label">Sale</div>
+                                <div class="product__item__pic set-bg" style="background-image: url('admin_dashboard/images/${element.cover || 'img/shop/default.jpg'}')">
+                                ${outOfStockLabel}
                                         <ul class="product__hover">
-                                            <li><a href="images/${element.cover || 'img/shop/default.jpg'}" class="image-popup"><span class="arrow_expand"></span></a></li>
+                                            <li><a href="admin_dashboard/images/${element.cover || 'img/shop/default.jpg'}" class="image-popup"><span class="arrow_expand"></span></a></li>
                                             <li><a class="addToWishlist" data-product-id="${element.id}"><span class="icon_heart_alt"></span></a></li>
-                                            <li><a  class="addToCart" data-product-id="${element.id}"><span class="icon_bag_alt"></span></a></li>
+                                                <li style="${addToCartBtn?"display:none" :""}"><a class="addToCart" data-product-id="${element.id}"><span class="icon_bag_alt"></span></a></li>
                                         </ul>
                                     </div>
                                     <div class="product__item__text">
-                                        <h6><a href="./product-details.html?id=${element.id}">${element.name}</a></h6>
-                                        <div class="rating">
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                        </div>
+                                        <h6><a href="./product-details.php?id=${element.id}">${element.name}</a></h6>
+                                       
                                         <div class="product__price">$${element.price}</div>
                                     </div>
                                 </div>
                             </div>`;
                         
                         productList.insertAdjacentHTML('beforeend', productHtml);
+                        
                     });
+                    
+                        document.querySelectorAll('.addToWishlist').forEach(function(button) {
+                            button.addEventListener('click', function() {
+                                addToWishlistHandler(this); // Call the handler function
+                            });
+                        });
+                        document.querySelectorAll('.addToCart').forEach(function(button) {
+                            button.addEventListener('click', function() {
+                                addToCartHandler(this); // Call the handler function
+                            });
+                        });
+                   
+                    
                 } else {
                     console.error("No products found or invalid response format:", response);
                 }
@@ -238,3 +264,66 @@ function updateTeamLogoAndName(team_id) {
         console.error('Team ID not found in teamsData');
     }
 }
+
+
+
+
+function addToCartHandler(button) {
+    if (!isLoggedIn) {
+        $.notify('Please log in to add items to your cart.', { className: 'info', position: 'top center' });
+        return;
+    }
+
+    let productId = button.getAttribute('data-product-id');
+    let quantityElement = document.getElementById("item_quantity");
+    let quantity = quantityElement ? quantityElement.value : 1;
+
+    let sizeElement = document.querySelector('input[name="size"]:checked');
+    let selectedSize = sizeElement ? sizeElement.value : 'S';
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', 'helper_functions/add_to_cart.php', true);
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+            if (xhr.status === 200) {
+                $.notify("Product added to cart!", { className: "success", position: "top center" });
+                reloadNavbar(); 
+            } else {
+                $.notify('Failed to add product to cart.', { className: 'error', position: 'top center' });
+            }
+        }
+    };
+
+    xhr.send('product_id=' + encodeURIComponent(productId) + '&quantity=' + encodeURIComponent(quantity) + '&size=' + encodeURIComponent(selectedSize));
+}
+
+function addToWishlistHandler(button) {
+    if (!isLoggedIn) {
+        $.notify('Please log in to add items to your wishlist.', { className: 'info', position: 'top center' });
+        return;
+    }
+
+    let productId = button.getAttribute('data-product-id');
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', 'helper_functions/add_to_wishlist.php', true);
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+            const response = JSON.parse(xhr.responseText);
+            if (response.success) {
+                $.notify("Product added to wishlist", { className: "success", position: "top center" });
+                reloadNavbar();
+            } else {
+                $.notify('Product already in wishlist.', { position: "top center" });
+            }
+        }
+    };
+
+    xhr.send('product_id=' + encodeURIComponent(productId));
+}
+
+

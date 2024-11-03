@@ -43,8 +43,8 @@ class CRUD extends connection{
                         <td>{$product['quantity']}</td>
                         <td>{$product['sizes']}</td> <!-- Display sizes here -->
                         <td>
-                            <a class='btn btn-primary editProduct'  data-bs-toggle='modal' data-bs-target='#editModal-{$product['id']}' onclick=\"handleEditProduct({$product['id']})\" >Edit</a>
-                            <a class='btn btn-danger' data-bs-toggle='modal' data-bs-target='#deleteModal-{$product['id']}'>Delete</a>
+                            <a class='btn btn-primary my-3 w-100 editProduct'  data-bs-toggle='modal' data-bs-target='#editModal-{$product['id']}' onclick=\"handleEditProduct({$product['id']})\" >Edit</a>
+                            <a class='btn btn-danger w-100' data-bs-toggle='modal' data-bs-target='#deleteModal-{$product['id']}'>Delete</a>
                         </td>
                     </tr>";
     
@@ -361,12 +361,12 @@ class CRUD extends connection{
     
             // Handle product images update
             $uploadDir = '../images/';
-            if (isset($_FILES['product_images']) && count($_FILES['product_images']['name']) > 1) {
-                // Delete old images and update new ones
+            if (isset($_FILES['product_images']) && !empty($_FILES['product_images']['name'][0])) {
+                // Check that there's at least one file in 'product_images' array that isn't empty
                 $stmt = $this->dbconnection->prepare("DELETE FROM `product_images` WHERE `product_id` = :product_id");
                 $stmt->bindParam(':product_id', $id);
                 $stmt->execute();
-    
+            
                 $fileCount = count($_FILES['product_images']['name']);
                 $allowed_extensions = ["jpg", "jpeg", "png", "gif"];
                 
@@ -376,37 +376,41 @@ class CRUD extends connection{
                     $fileSize = $_FILES['product_images']['size'][$i];
                     $fileError = $_FILES['product_images']['error'][$i];
             
-                    $file_extension = pathinfo($fileName, PATHINFO_EXTENSION);
+                    // Check if the file name is not empty to proceed with processing
+                    if (!empty($fileName)) {
+                        $file_extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
             
-                    if (!in_array(strtolower($file_extension), $allowed_extensions)) {
-                        echo "<script> alert('Invalid format. Only JPG, JPEG, PNG, and GIF formats are allowed.'); </script>"; 
-                        return;
-                    }
+                        if (!in_array($file_extension, $allowed_extensions)) {
+                            echo "<script> alert('Invalid format. Only JPG, JPEG, PNG, and GIF formats are allowed in images.'); </script>"; 
+                            return;
+                        }
             
-                    if ($fileSize > 10 * 1024 * 1024) { // Limit file size to 2MB
-                        echo "File size exceeds 2MB limit.";
-                        return;
-                    }
-    
-                    if ($fileError === UPLOAD_ERR_OK) {
-                        $fileDestination = $uploadDir . basename($fileName);
-                        
-                        if (move_uploaded_file($fileTmpName, $fileDestination)) {
-                            $stmt = $this->dbconnection->prepare("INSERT INTO product_images (product_id, image_url) VALUES (:product_id, :image_url)");
-                            $stmt->bindParam(':product_id', $id);
-                            $stmt->bindParam(':image_url', $fileDestination);
-    
-                            if (!$stmt->execute()) {
-                                echo "Error inserting {$fileName} into database: " . $stmt->error . "<br>";
+                        if ($fileSize > 10 * 1024 * 1024) { // Limit file size to 2MB
+                            echo "File size exceeds 2MB limit.";
+                            return;
+                        }
+            
+                        if ($fileError === UPLOAD_ERR_OK) {
+                            $fileDestination = $uploadDir . basename($fileName);
+                            
+                            if (move_uploaded_file($fileTmpName, $fileDestination)) {
+                                $stmt = $this->dbconnection->prepare("INSERT INTO product_images (product_id, image_url) VALUES (:product_id, :image_url)");
+                                $stmt->bindParam(':product_id', $id);
+                                $stmt->bindParam(':image_url', $fileDestination);
+            
+                                if (!$stmt->execute()) {
+                                    echo "Error inserting {$fileName} into database: " . $stmt->error . "<br>";
+                                }
+                            } else {
+                                echo "Error uploading {$fileName}.<br>";
                             }
                         } else {
-                            echo "Error uploading {$fileName}.<br>";
+                            echo "Error uploading {$fileName}: Code {$fileError}.<br>";
                         }
-                    } else {
-                        echo "Error uploading {$fileName}: Code {$fileError}.<br>";
                     }
                 }
             }
+            
     
             // Update product sizes if sizes are provided
             if (isset($_POST['sizes']) && is_array($_POST['sizes'])) {

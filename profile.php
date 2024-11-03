@@ -1,8 +1,7 @@
 <?php
-session_start();
 require_once './classes/database.php';
 require_once './classes/User.php';
-
+session_start();
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit;
@@ -51,6 +50,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Profile</title>
+    <link rel="stylesheet" href="css/elegant-icons.css" type="text/css">
+    <link rel="icon" href="./img/icon.svg">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
@@ -165,7 +166,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     transform: scale(1.05); 
 }
 
-
+a{
+    cursor: pointer;
+    text-decoration: none;
+    color: #c0392b;
+}
+a:hover{
+    text-decoration: none;
+    color: #e74c3c;
+    margin-bottom: 5px;
+}
 
 
 
@@ -176,10 +186,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 </head>
 <body>
-
+<?php ?>
 <div class="container mt-5">
+<a href="index.php" class="back-link ">
+    <i class="elegant-icon arrow_left"></i> Back to Home
+</a>
     <div class="row">
-        
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/elegant-icons/1.0.7/style.css">
+
         <div class="col-md-4">
             <div class="card shadow-sm">
                 <div class="card-body text-center">

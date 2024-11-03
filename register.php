@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Signup/Login</title>
+    <link rel="icon" href="./img/icon.svg">
+
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700|Raleway:300,600" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -24,6 +26,8 @@
                 <div class="login form-peice switched">
                     <form id="loginForm" class="login-form"  method="post">
                         <div class="form-group">
+                            <br>
+                            <br>
                             <h1>Sign In!</h1>
                             <label for="email">Email Address</label>
                             <input type="email" name="email" id="email" required>
@@ -40,9 +44,9 @@
                 </div>
 
                 <div class="signup form-peice">
-                    <form class="signup-form" id="registerForm"  method="post">
+                    <form class="signup-form " id="registerForm"  method="post">
                         <div class="form-group">
-                            <h3>Sign Up!</h3>
+                            <h3 >Sign Up!</h3>
                             <label for="user_name">Full Name</label>
                             <input type="text" name="user_name" id="name" class="name" required>
                             <span class="error"></span>

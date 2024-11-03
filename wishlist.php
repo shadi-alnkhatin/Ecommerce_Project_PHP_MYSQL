@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Wishlist</title>
+    <link rel="icon" href="./img/icon.svg">
+
 	<link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
     <link rel="stylesheet" href="css/font-awesome.min.css" type="text/css">
     <link rel="stylesheet" href="css/elegant-icons.css" type="text/css">
@@ -17,7 +19,7 @@
 <?php include('./navbar.php'); ?>
 
 <div class="container">
-	<h3>Wishlist</h3>
+	<h3 class="mt-5 mx-3">Wishlist</h3>
     <div class="col-lg-9 col-md-9">
         <div class="row" id="productList">
             <?php 
@@ -36,11 +38,11 @@
                 ?>
                 <div class="col-lg-4 col-md-6 my-3" id="wishlist-item-<?php echo $item['id'];?>">
                     <div class="product__item sale">
-					<div class="product__item__pic set-bg" data-setbg="images/<?php echo $item['cover']; ?>">                             <?php if ($item['quantity'] <= 1) { ?>
+					<div class="product__item__pic set-bg" data-setbg="admin_dashboard/images/<?php echo $item['cover']; ?>">                             <?php if ($item['quantity'] <= 1) { ?>
                                 <div class="label stockout stockblue">Out Of Stock</div>
                             <?php } ?>
                             <ul class="product__hover">
-                                <li><a href="images/<?php echo $item['cover']; ?>" class="image-popup"><span class="arrow_expand"></span></a></li>
+                                <li><a href="admin_dashboard/images/<?php echo $item['cover']; ?>" class="image-popup"><span class="arrow_expand"></span></a></li>
                                 <li><a class="delete-wishlist-item" data-product-id="<?php echo $item['id']; ?>"><span class="icon_trash_alt"></span>
 								</a></li>
                                 <?php if ($item['quantity'] > 1) { ?>

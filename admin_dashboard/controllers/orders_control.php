@@ -103,11 +103,10 @@ class CRUD extends Connection{
                                 <img src='".htmlspecialchars($item['product_cover'])."' class='card-img-top' alt='Product Image' style='height: 150px; object-fit: cover;'> <!-- Set image height -->
                                 <div class='card-body d-flex flex-column'> <!-- Use flexbox on card body -->
                                     <h5 class='card-title'>".htmlspecialchars($item['product_name'])."</h5>
-                                    <p class='card-text'>".htmlspecialchars($item['product_description'])."</p>
                                     <p class='card-text'>Price: $".number_format($item['product_price'], 2)."</p>
                                     <p class='card-text'>Quantity: ".htmlspecialchars($item['product_quantity'])."</p> <!-- Display quantity -->
                                     <p class='card-text'>Size: ".htmlspecialchars($item['product_size'])."</p>
-                                    <a href='../pages/products' class='btn btn-primary mt-auto'>Go to Products</a>
+                                    <a href='../pages/products.php' class='btn btn-primary mt-auto'>Go to Products</a>
                                 </div>
                             </div>
                         </div>";
@@ -175,7 +174,7 @@ public function getOrderItems($order_id) {
                 products.description AS product_description,
                 products.price AS product_price,
                 order_items.quantity AS product_quantity,
-                product_attributes.size AS product_size
+                order_items.size AS product_size
               FROM 
                 order_items
               JOIN 
