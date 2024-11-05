@@ -12,7 +12,7 @@ class Connection {
         try {
             $this->dsn = "mysql:host=$this->server;dbname=$this->dbname";
             $this->dbconnection = new PDO($this->dsn, $this->username, $this->password);
-            echo "Database: Connected";
+            //echo "Database: Connected";
         } catch (PDOException $error) {
             echo $error;
         }

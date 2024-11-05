@@ -141,9 +141,9 @@ include_once("../layout/header.php");
                         </div>
                         <thead>
                             <tr>
-                                <th>ID</th>
+                                <!-- <th>ID</th> -->
                                 <th>Name</th>
-                                <th>description</th>
+                                <!-- <th>description</th> -->
                                 <th>cover</th>
                                 <th>league</th>
                                 <th>team</th>
@@ -205,6 +205,14 @@ include_once("../layout/header.php");
     Swal.fire({
         icon: "success",
         title: "Your Product has been updated",
+        showConfirmButton: false,
+        timer: 3000
+    })
+    <?php } 
+        else if(htmlspecialchars($_GET['message']) == "imageError") {?>
+    Swal.fire({
+        icon: "error",
+        title: "An error occurred with the image upload",
         showConfirmButton: false,
         timer: 3000
     })

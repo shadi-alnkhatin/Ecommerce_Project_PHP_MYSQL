@@ -89,15 +89,18 @@ include_once("../layout/header.php");
                                             </div>
                                             <div class="mb-3">
                                                 <label for="city" class="form-label">Address Line 2</label>
-                                                <input type="text" id="city" name="city"
-                                                    class="form-control" placeholder="Enter City name"
-                                                    maxlength='50' required>
+                                                <input type="text" id="city" name="city" class="form-control"
+                                                    placeholder="Enter City name" maxlength='50' required>
                                             </div>
                                             <?php if ($_SESSION['role'] == 3): ?>
                                             <div class="mb-3">
                                                 <label for="role" class="form-label">User Role</label>
-                                                <input type="number" id="role" name="role" class="form-control" min="0"
-                                                    max="3" maxlength="1" placeholder="Enter user's role" required>
+                                                <select id="role" name="role" class="form-select" required>
+                                                    <option value="" disabled selected>Select user role</option>
+                                                    <option value="1">User</option>
+                                                    <option value="2">Admin</option>
+                                                    <option value="3">Superadmin</option>
+                                                </select>
                                             </div>
                                             <?php endif; ?>
                                         </div>
@@ -118,9 +121,9 @@ include_once("../layout/header.php");
                         <th>Email</th>
                         <th>Phone</th>
                         <th>Address 1</th>
-                        <th>Address 2</th>
+                        <!-- <th>Address 2</th>
                         <th>Country</th>
-                        <th>City</th>
+                        <th>City</th> -->
                         <th>Role</th>
                         <th>action</th>
                     </tr>

@@ -17,55 +17,61 @@
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
         <script>
     <?php if(isset($_GET['message'])): ?>
-        <?php 
-            $message = htmlspecialchars($_GET['message']);
-            $alertTitle = '';
-            
-            switch ($message) {
-                case 'userAdded':
-                    $alertTitle = "User has been added";
-                    break;
-                case 'userUpdated':
-                    $alertTitle = "User has been updated";
-                    break;
-                case 'userDeleted':
-                    $alertTitle = "User has been deleted";
-                    break;
-                case 'orderUpdated':
-                    $alertTitle = "Order has been updated";
-                    break;
-                case 'leagueAdded':
-                    $alertTitle = "League has been added";
-                    break;
-                case 'leagueUpdated':
-                    $alertTitle = "League has been updated";
-                    break;
-                case 'leagueDeleted':
-                    $alertTitle = "League has been deleted";
-                    break;
-                case 'teamAdded':
-                    $alertTitle = "Team has been added";
-                    break;
-                case 'teamUpdated':
-                    $alertTitle = "Team has been updated";
-                    break;
-                case 'teamDeleted':
-                    $alertTitle = "Team has been deleted";
-                    break;
-                case 'couponAdded':
-                    $alertTitle = "Coupon has been added";
-                    break;
-                case 'couponUpdated':
-                    $alertTitle = "Coupon has been updated";
-                    break;
-                case 'couponDeleted':
-                    $alertTitle = "Coupon has been deleted";
-                    break;
-            }
-        ?>
+    <?php 
+        $message = htmlspecialchars($_GET['message']);
+        $alertTitle = '';
+        $alertIcon = 'success'; // Default icon to success
 
+        switch ($message) {
+            case 'userAdded':
+                $alertTitle = "User has been added";
+                break;
+            case 'userUpdated':
+                $alertTitle = "User has been updated";
+                break;
+            case 'userDeleted':
+                $alertTitle = "User has been deleted";
+                break;
+            case 'orderUpdated':
+                $alertTitle = "Order has been updated";
+                break;
+            case 'leagueAdded':
+                $alertTitle = "League has been added";
+                break;
+            case 'leagueUpdated':
+                $alertTitle = "League has been updated";
+                break;
+            case 'leagueDeleted':
+                $alertTitle = "League has been deleted";
+                break;
+            case 'teamAdded':
+                $alertTitle = "Team has been added";
+                break;
+            case 'teamUpdated':
+                $alertTitle = "Team has been updated";
+                break;
+            case 'teamDeleted':
+                $alertTitle = "Team has been deleted";
+                break;
+            case 'couponAdded':
+                $alertTitle = "Coupon has been added";
+                break;
+            case 'couponUpdated':
+                $alertTitle = "Coupon has been updated";
+                break;
+            case 'couponDeleted':
+                $alertTitle = "Coupon has been deleted";
+                break;
+            case 'imageError':
+                $alertTitle = "An error occurred with the image upload";
+                $alertIcon = 'error'; // Change icon to error for this case
+                break;
+        }
+    ?>
+
+    <script>
         Swal.fire({
-            icon: "success",
+            icon: "<?php echo $alertIcon; ?>",
             title: "<?php echo $alertTitle; ?>",
             showConfirmButton: false,
             timer: 3000
@@ -75,8 +81,9 @@
             url.searchParams.delete('message');
             window.history.replaceState({}, document.title, url);
         });
-    <?php endif; ?>
-</script>
+    </script>
+<?php endif; ?>
+
 <script>
     
     document.getElementById("logoutLink").addEventListener("click", function (e) {

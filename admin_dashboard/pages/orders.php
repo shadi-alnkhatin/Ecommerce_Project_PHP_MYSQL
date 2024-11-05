@@ -33,7 +33,7 @@ include_once("../layout/header.php");
                         <thead>
                             <tr>
                                 <th>Order Id</th>
-                                <th>User Id</th>
+                                <th>User Name</th>
                                 <th>Total Price</th>
                                 <th>Payment Method</th>
                                 <th>Payment Status</th>

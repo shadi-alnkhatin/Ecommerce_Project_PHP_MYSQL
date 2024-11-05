@@ -33,9 +33,9 @@ class CRUD extends connection{
                 $availableSizes = ['S', 'M', 'L', 'XL'];
                 $savedSizes = explode(', ', $product['sizes']);
                 echo "<tr>
-                        <td>{$product['id']}</td>
+                        <!-- <td>{$product['id']}</td> -->
                         <td>{$product['name']}</td>
-                        <td>{$product['description']}</td>
+                        <!-- <td>{$product['description']}</td> -->
                         <td><img src='{$product['cover']}' width='75' height='75'></td>
                         <td>{$product['league_name']}</td>
                         <td>{$product['team_name']}</td>
@@ -178,8 +178,8 @@ class CRUD extends connection{
             
             // Validate the file extension
             if (!in_array(strtolower($file_extension), $allowed_extensions)) {
-                echo "<script> alert('Invalid format. Only JPG, JPEG, PNG, and GIF formats are allowed.'); </script>"; 
-                return;
+                header('Location: ../pages/products.php?message=imageError');
+                exit();
             }
             
             // Validate the file size
@@ -237,8 +237,8 @@ class CRUD extends connection{
                             $file_extension = pathinfo($fileName, PATHINFO_EXTENSION);
                 
                             if (!in_array(strtolower($file_extension), $allowed_extensions)) {
-                                echo "<script> alert('Invalid format. Only JPG, JPEG, PNG, and GIF formats are allowed.'); </script>"; 
-                                return;
+                                header('Location: ../pages/products.php?message=imageError');
+                                exit();                             
                             }
                 
                             if ($fileSize > 10 * 1024 * 1024) { // Limit file size to 2MB

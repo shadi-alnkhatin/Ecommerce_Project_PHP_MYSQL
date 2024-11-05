@@ -40,7 +40,11 @@ class CRUD extends connection{
                     $roleInput = "
                         <div class='mb-3'>
                             <label for='role' class='form-label'>User Role</label>
-                            <input type='number' id='role' name='role' class='form-control' min='1' max='3' value='{$user['role']}' required>
+                            <select id='role' name='role' class='form-select' required>
+                                <option value='1' " . ($user['role'] == 1 ? 'selected' : '') . ">User</option>
+                                <option value='2' " . ($user['role'] == 2 ? 'selected' : '') . ">Admin</option>
+                                <option value='3' " . ($user['role'] == 3 ? 'selected' : '') . ">SuperAdmin</option>
+                            </select>
                         </div>
                     ";
                 }
@@ -56,9 +60,9 @@ class CRUD extends connection{
                         <td>$user[email]</td>
                         <td>$user[phone_number]</td>
                         <td>$user[address_line_1]</td>
-                        <td>$user[address_line_2]</td>
+                        <!-- <td>$user[address_line_2]</td>
                         <td>$user[country]</td>
-                        <td>$user[city]</td>
+                        <td>$user[city]</td> -->
                         <td>$roleLabel</td>
                         <td>
                             <a href='#' class='btn btn-primary my-3 w-100' data-bs-toggle='modal' data-bs-target='#editModal-$user[id]'>Edit</a>

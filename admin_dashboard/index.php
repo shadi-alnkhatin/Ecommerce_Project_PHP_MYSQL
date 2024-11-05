@@ -25,8 +25,12 @@ echo isset($_SESSION['email']) ? htmlspecialchars($_SESSION['email']) : 'Guest';
     <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
     <link href="css/styles.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/bs-brain@2.0.4/components/cards/card-1/assets/css/card-1.css">
     </style>
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
 </head>
 
 <body class="sb-nav-fixed">
@@ -135,16 +139,6 @@ echo isset($_SESSION['email']) ? htmlspecialchars($_SESSION['email']) : 'Guest';
             <main>
                 <div class="container-fluid px-4">
                     <h1 class="mt-4">Dashboard</h1>
-                    <p>
-                        Welcome,
-                        <?= isset($_SESSION['user_name']) ? htmlspecialchars($_SESSION['user_name']) : 'User' ?>
-                        (<?= isset($_SESSION['email']) ? htmlspecialchars($_SESSION['email']) : 'No email' 
-        
-        ?>)
-                    </p>
-                    <ol class="breadcrumb mb-4">
-                        <li class="breadcrumb-item active">Dashboard</li>
-                    </ol>
                     <?php
                     $connection = new Connection();
                     $connection->connect(); // Establish the connection
@@ -171,54 +165,228 @@ echo isset($_SESSION['email']) ? htmlspecialchars($_SESSION['email']) : 'Guest';
                     // Count number of deleted users
                     $stmtDeletedUsers = $dbconnection->query("SELECT COUNT(*) as total FROM users WHERE deleted = true");
                     $countDeletedUsers = $stmtDeletedUsers->fetch(PDO::FETCH_ASSOC)['total'];
+
+                    $stmtTotalEarnings = $dbconnection->query("SELECT SUM(total_price) as total_earnings FROM orders");
+                    $totalEarnings = $stmtTotalEarnings->fetch(PDO::FETCH_ASSOC)['total_earnings'];
+
+                    $query = "SELECT 
+            DATE_FORMAT(created_at, '%Y-%m') AS order_month, 
+            SUM(total_price) AS monthly_total 
+          FROM orders 
+          GROUP BY order_month
+          ORDER BY order_month";
+          
+        $result = $dbconnection->query($query);
+        $orderData = [];
+        while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+        $orderData[] = $row;
+        }
+
+        // Pass data to JavaScript
+        echo "<script>
+        const chartLabels = " . json_encode(array_column($orderData, 'order_month')) . ";
+        const chartData = " . json_encode(array_column($orderData, 'monthly_total')) . ";
+        </script>";
+
+
+        $sql = "SELECT order_status, COUNT(*) as count FROM orders GROUP BY order_status";
+        $result = $dbconnection->query($sql);
+
+        $orderStatusData = [];
+        $orderCounts = [];
+
+        while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+            $orderStatusData[] = $row['order_status'];
+            $orderCounts[] = $row['count'];
+        }
+
+// Pass data to JavaScript
+echo "<script>
+        const orderStatusData = " . json_encode($orderStatusData) . ";
+        const orderCounts = " . json_encode($orderCounts) . ";
+      </script>";
                     ?>
-                    <div class="row">
-                    <div class="col-xl-6 col-md-6"> <!-- Changed from col-xl-4 to col-xl-6 -->
-                        <div class="card bg-primary text-white mb-4">
-                            <div class="card-body p-4"> <!-- Added padding utility -->
-                                Number Of Users: <?php echo $countUsers; ?>
-                            </div>
-                            <div class="card-footer d-flex align-items-center justify-content-between">
-                                <a class="small text-white stretched-link" href="./pages/users.php">View Users</a>
-                                <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+
+                    <!-- Card 1 - Bootstrap Brain Component -->
+                    <section class="py-3 py-md-5">
+                        <div class="container">
+                            <div class="row justify-content-center">
+                                <div class="col-12">
+                                    <div class="row gx-4 gy-4">
+                                        <!-- Users Card -->
+                                        <div class="col-12 col-md-3">
+                                            <div class="card widget-card border-light shadow-sm">
+                                                <div class="card-body p-4">
+                                                    <div class="row">
+                                                        <div class="col-8">
+                                                            <h5 class="card-title widget-card-title mb-3">Users</h5>
+                                                            <h4 class="card-subtitle text-body-secondary m-0">
+                                                                <?php echo $countUsers; ?></h4>
+                                                        </div>
+                                                        <div class="col-4 d-flex justify-content-end">
+                                                            <div
+                                                                class="lh-1 text-white bg-info rounded-circle p-3 d-flex align-items-center justify-content-center">
+                                                                <i class="bi bi-person fs-4"></i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <a class="btn btn-outline-info btn-sm mt-4"
+                                                        href="./pages/users.php">See the users</a>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Earnings Card -->
+                                        <div class="col-12 col-md-3">
+                                            <div class="card widget-card border-light shadow-sm">
+                                                <div class="card-body p-4">
+                                                    <div class="row">
+                                                        <div class="col-8">
+                                                            <h5 class="card-title widget-card-title mb-3">Earnings</h5>
+                                                            <h4 class="card-subtitle text-body-secondary m-0">
+                                                                $<?php echo number_format($totalEarnings, 2); ?></h4>
+                                                        </div>
+                                                        <div class="col-4 d-flex justify-content-end">
+                                                            <div
+                                                                class="lh-1 text-white bg-info rounded-circle p-3 d-flex align-items-center justify-content-center">
+                                                                <i class="bi bi-currency-dollar fs-4"></i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <a class="btn btn-outline-info btn-sm mt-4"
+                                                        href="./pages/orders.php">See the orders</a>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Products Card -->
+                                        <div class="col-12 col-md-3">
+                                            <div class="card widget-card border-light shadow-sm">
+                                                <div class="card-body p-4">
+                                                    <div class="row">
+                                                        <div class="col-8">
+                                                            <h5 class="card-title widget-card-title mb-3">Products</h5>
+                                                            <h4 class="card-subtitle text-body-secondary m-0">
+                                                                <?php echo $countProducts; ?></h4>
+                                                        </div>
+                                                        <div class="col-4 d-flex justify-content-end">
+                                                            <div
+                                                                class="lh-1 text-white bg-info rounded-circle p-3 d-flex align-items-center justify-content-center">
+                                                                <i class="bi bi-box-seam-fill fs-4"></i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <a class="btn btn-outline-info btn-sm mt-4"
+                                                        href="./pages/products.php">See the products</a>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Orders Card -->
+                                        <div class="col-12 col-md-3">
+                                            <div class="card widget-card border-light shadow-sm">
+                                                <div class="card-body p-4">
+                                                    <div class="row">
+                                                        <div class="col-8">
+                                                            <h5 class="card-title widget-card-title mb-3">Orders</h5>
+                                                            <h4 class="card-subtitle text-body-secondary m-0">
+                                                                <?php echo $countOrders; ?></h4>
+                                                        </div>
+                                                        <div class="col-4 d-flex justify-content-end">
+                                                            <div
+                                                                class="lh-1 text-white bg-info rounded-circle p-3 d-flex align-items-center justify-content-center">
+                                                                <i class="bi bi-cart fs-4"></i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <a class="btn btn-outline-info btn-sm mt-4"
+                                                        href="./pages/orders.php">See the orders</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-xl-6 col-md-6"> <!-- Changed from col-xl-4 to col-xl-6 -->
-                        <div class="card bg-warning text-white mb-4">
-                            <div class="card-body p-4"> <!-- Added padding utility -->
-                                Number Of Products: <?php echo $countProducts; ?>
-                            </div>
-                            <div class="card-footer d-flex align-items-center justify-content-between">
-                                <a class="small text-white stretched-link" href="./pages/products.php">View Products</a>
-                                <div class="small text-white"><i class="fas fa-angle-right"></i></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-6 col-md-6"> <!-- Added new card -->
-                        <div class="card bg-success text-white mb-4">
-                            <div class="card-body p-4"> <!-- Added padding utility -->
-                                Number Of Orders: <?php echo $countOrders; ?>
-                            </div>
-                            <div class="card-footer d-flex align-items-center justify-content-between">
-                                <a class="small text-white stretched-link" href="./pages/orders.php">View Orders</a>
-                                <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                    </section>
+                    <div class="row mt-5">
+                        <!-- Bar Chart Column -->
+                        <div class="col-md-8">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title text-center">Monthly Earnings</h5> <!-- Bar Chart Label -->
+                                    <canvas id="myChart"></canvas>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-xl-6 col-md-6"> <!-- Added new card -->
-                        <div class="card bg-danger text-white mb-4">
-                            <div class="card-body p-4"> <!-- Added padding utility -->
-                                Number Of Deleted Users: <?php echo $countDeletedUsers; ?>
-                            </div>
-                            <div class="card-footer d-flex align-items-center justify-content-between">
-                                <a class="small text-white stretched-link" href="./pages/users.php">View Users</a>
-                                <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+
+                        <!-- Pie Chart Column -->
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title text-center">Order Status Distribution</h5>
+                                    <!-- Pie Chart Label -->
+                                    <canvas id="myPie"></canvas>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </main>
+            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+            <script>
+            const ctx = document.getElementById('myChart');
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: chartLabels, // Use PHP-generated month labels
+                    datasets: [{
+                        label: 'Monthly Earnings',
+                        data: chartData, // Use PHP-generated earnings data
+                        backgroundColor: 'rgb(13, 202, 240)',
+                        borderColor: 'rgb(13, 202, 240)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+            </script>
+            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+            <script>
+            const colors = [
+                "#b91d47", // Adjust colors as needed
+                "#00aba9",
+                "#2b5797",
+                "#e8c3b9",
+                "#1e7145"
+            ];
+
+            new Chart("myPie", {
+                type: "pie",
+                data: {
+                    labels: orderStatusData,
+                    datasets: [{
+                        backgroundColor: colors,
+                        data: orderCounts
+                    }]
+                },
+                options: {
+                    title: {
+                        display: true,
+                        text: "Order Status Distribution"
+                    }
+                }
+            });
+            </script>
+
             <?php
             require_once("./layout/footer.php")
             ?>

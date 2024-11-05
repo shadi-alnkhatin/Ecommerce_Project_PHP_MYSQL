@@ -8,7 +8,8 @@ class CRUD extends Connection{
         // Adjusted query to join users table and fetch address_line_1 and address_line_2
         $query = "
             SELECT 
-                orders.*, 
+                orders.*,
+                users.user_name, 
                 users.address_line_1, 
                 users.address_line_2 
             FROM 
@@ -25,8 +26,8 @@ class CRUD extends Connection{
                 $orderItems = $this->getOrderItems($order['id']);
                 echo "<tr>
                         <td>{$order['id']}</td>
-                        <td>{$order['user_id']}</td>
-                        <td>{$order['total_price']}</td>
+                        <td>{$order['user_name']}</td>
+                        <td>$ {$order['total_price']}</td>
                         <td>{$order['payment_method']}</td>
                         <td>{$order['payment_status']}</td>
                         <td>{$order['address_line_1']}</td>  
