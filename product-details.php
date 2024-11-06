@@ -45,6 +45,8 @@ include ('./classes/products.php');
     </div>
 
    <?php include('./navbar.php')?>
+   <br><br>
+<br>
     <!-- Header Section End -->
 
     <!-- Breadcrumb Begin -->

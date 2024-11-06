@@ -141,7 +141,7 @@ class Cart {
 
                     // Insert the new product in the new cart
                     $sql = $this->db->prepare("INSERT INTO cart_items (cart_id, product_id, quantity, product_price, size) VALUES (:cart_id, :product_id, :quantity, :product_price,:size)");
-                    $sql->bindParam(':cart_id', $cart['cart_id']);
+                    $sql->bindParam(':cart_id', $cart_id);
                     $sql->bindParam(':product_id', $product_id);
                     $sql->bindParam(':quantity', $quantity);
                     $sql->bindParam(':product_price', $product['price']);

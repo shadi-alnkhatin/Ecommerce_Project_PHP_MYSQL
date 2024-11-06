@@ -64,7 +64,7 @@ class User {
     }
 
     public function login($email, $password) {
-        $query = "SELECT * FROM users WHERE email = :email";
+        $query = "SELECT * FROM users WHERE email = :email And deleted = 0 And role=1";
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(":email", $email);
         $stmt->execute();

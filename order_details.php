@@ -44,6 +44,7 @@ $orderDetails = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Order Details</title>
     <link rel="icon" href="./img/icon.svg">
+    <link rel="stylesheet" href="css/elegant-icons.css" type="text/css">
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
@@ -92,13 +93,30 @@ $orderDetails = $stmt->fetchAll(PDO::FETCH_ASSOC);
             border-top: 2px solid #b54444;
             padding-top: 20px;
         }
+        a{
+    cursor: pointer;
+    text-decoration: none;
+    color: #c0392b;
+}
+a:hover{
+    text-decoration: none;
+    color: #e74c3c;
+    margin-bottom: 5px;
+}
+
+
     </style>
 </head>
 <body>
     <div class="container">
+    
+    
         <h2 class="mt-4 text-center">Order Details</h2>
         <?php if (count($orderDetails) > 0): ?>
             <div class="invoice animate__animated animate__fadeIn">
+            <a href="index.php" class="back-link ">
+    <i class="elegant-icon arrow_left"></i> Back to Home
+</a><br><br>
                 <div class="invoice-header">
                     <h5>Order ID: <?= htmlspecialchars($orderDetails[0]['order_id']) ?></h5>
                     <p><strong>Total Price:</strong> $<?= htmlspecialchars($orderDetails[0]['total_price']) ?></p>
@@ -139,7 +157,7 @@ $orderDetails = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     </a>
                                 </div>
                                 <div class="card-body">
-                                    <h5 class="card-title">Product ID: <?= htmlspecialchars($item['product_id']) ?></h5>
+                                    <h5 class="card-title"><a href="./product-details.php?id=<?= htmlspecialchars($item['product_id']) ?>">Product Details</a></h5>
                                     <p class="card-text"><strong>Quantity:</strong> <?= htmlspecialchars($item['quantity']) ?></p>
                                     <p class="card-text"><strong>Price:</strong> $<?= htmlspecialchars($item['price']) ?></p>
                                 </div>

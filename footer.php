@@ -22,7 +22,7 @@
                         <ul>
                             <li><a href="./aboutus.php">About</a></li>
                             <li><a href="./contact.php">Contact</a></li>
-                            <li><a href="./shop.php">FAQ</a></li>
+                            <li><a href="./shop.php">Shop</a></li>
                         </ul>
                     </div>
                 </div>

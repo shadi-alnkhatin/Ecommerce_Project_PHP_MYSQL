@@ -1,10 +1,8 @@
 document.addEventListener('DOMContentLoaded', function() {
-    
-
     // Function to handle quantity change event and send AJAX request
     function updateCart(input) {
-        var row = input.closest('tr');
-        var productId = row.getAttribute('data-product-id');
+        var cartItem = input.closest('.cart-item');
+        var productId = cartItem.getAttribute('data-product-id');
         var newQuantity = input.value;
 
         // Send AJAX request to update the server
@@ -17,8 +15,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 try {
                     var data = JSON.parse(xhr.responseText);
                     if (data.success) {
-                        row.querySelector('.product-total').textContent = data.product_total;
-                        document.querySelector('#cart-total').textContent = '$' + data.total_price;
+                        cartItem.querySelector('.product-total').textContent ='$'+ data.product_total;
+                        document.querySelector('#cart-total').textContent = data.total_price;
                     } else {
                         console.error('Error updating cart:', data.message);
                     }
@@ -28,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         };
 
-        xhr.send('product_id=' + productId + '&quantity=' + newQuantity);
+        xhr.send('product_id=' + encodeURIComponent(productId) + '&quantity=' + encodeURIComponent(newQuantity));
     }
 
     // Attach change event listener to quantity inputs to handle manual updates
@@ -37,15 +35,13 @@ document.addEventListener('DOMContentLoaded', function() {
             updateCart(input);
         });
     });
-});
 
-document.addEventListener('DOMContentLoaded', function() {
-    const deleteButtons = document.querySelectorAll('.cart__close .icon_close');
-
+    // Remove product from cart with AJAX
+    const deleteButtons = document.querySelectorAll('.cart-item .icon_close');
     deleteButtons.forEach(button => {
         button.addEventListener('click', function() {
-            const productRow = this.closest('tr');
-            const productId = productRow.getAttribute('data-product-id');
+            const cartItem = this.closest('.cart-item');
+            const productId = cartItem.getAttribute('data-product-id');
 
             // Perform AJAX request to delete item
             const xhr = new XMLHttpRequest();
@@ -53,44 +49,40 @@ document.addEventListener('DOMContentLoaded', function() {
             xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 
             xhr.onreadystatechange = function() {
-    if (xhr.readyState === XMLHttpRequest.DONE) {
-        try {
-            const response = JSON.parse(xhr.responseText);
-            if (response.success) {
-                $.notify("Product removed from cart", "success");
-                setTimeout(() => location.reload(), 500);
-            } else {
-                $.notify("Failed to remove product from cart", "error");
-            }
-        } catch (e) {
-            console.error("Invalid JSON response:", xhr.responseText);
-            $.notify("An error occurred. Please try again.", "error");
-        }
-    }
-};
-
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    try {
+                        const response = JSON.parse(xhr.responseText);
+                        if (response.success) {
+                            $.notify("Product removed from cart", "success");
+                            cartItem.remove();
+                            document.querySelector('#cart-total').textContent = '$' + response.total_price;
+                            location.reload();
+                        } else {
+                            $.notify("Failed to remove product from cart", "error");
+                        }
+                    } catch (e) {
+                        console.error("Invalid JSON response:", xhr.responseText);
+                        $.notify("An error occurred. Please try again.", "error");
+                    }
+                }
+            };
 
             xhr.send('product_id=' + encodeURIComponent(productId));
         });
     });
-});
 
-
-document.addEventListener('DOMContentLoaded', function () {
+    // Populate size options for each cart item
     const itemSizeSelects = document.querySelectorAll('.item_size');
-
     itemSizeSelects.forEach(select => {
-        const productId = select.closest('tr').getAttribute('data-product-id');
-        console.log("Product ID:", productId); // Debug: Check if Product ID is correct
+        const cartItem = select.closest('.cart-item');
+        const productId = cartItem.getAttribute('data-product-id');
 
         const xhr = new XMLHttpRequest();
         xhr.open('POST', 'helper_functions/get_item_size.php', true);
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 
-        xhr.onreadystatechange = function () {
+        xhr.onreadystatechange = function() {
             if (xhr.readyState === XMLHttpRequest.DONE) {
-                console.log("Response Text:", xhr.responseText); // Debug: Show raw response text
-                
                 try {
                     const response = JSON.parse(xhr.responseText);
                     if (response.success) {
@@ -112,20 +104,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
         xhr.send('product_id=' + encodeURIComponent(productId));
     });
-});
 
-document.addEventListener('DOMContentLoaded', function () {
-    const sizeSelectElements = document.querySelectorAll('.item_size');
-
-    sizeSelectElements.forEach(select => {
-        select.addEventListener('change', function () {
+    // Update item size with AJAX when selection changes
+    document.querySelectorAll('.item_size').forEach(select => {
+        select.addEventListener('change', function() {
             const size = this.value;
-            const productId = this.closest('tr').getAttribute('data-product-id'); 
+            const cartItem = this.closest('.cart-item');
+            const productId = cartItem.getAttribute('data-product-id');
+
             const xhr = new XMLHttpRequest();
-            xhr.open('POST', 'helper_functions/update_cart_size.php', true); 
+            xhr.open('POST', 'helper_functions/update_cart_size.php', true);
             xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 
-            xhr.onreadystatechange = function () {
+            xhr.onreadystatechange = function() {
                 if (xhr.readyState === XMLHttpRequest.DONE) {
                     try {
                         const response = JSON.parse(xhr.responseText);

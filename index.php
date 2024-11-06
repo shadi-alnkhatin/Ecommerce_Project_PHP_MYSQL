@@ -41,6 +41,7 @@ include("./classes/products.php");
         <div class="loader"></div>
     </div>
         <?php include('./navbar.php');?>
+        <br><br><br>
 
 <section class="banner set-bg" data-setbg="img/football2.jpg">
 <div class="banner__overlay"></div> <!-- Overlay div -->
@@ -54,21 +55,10 @@ include("./classes/products.php");
 
                             <h1>Support Your Team </h1>
                             <a href="./shop.php">Shop now</a>
+
                         </div>
                     </div>
-                    <div class="banner__item">
-                        <div class="banner__text">
-                           
-                            <h1>Wear Your Passion</h1>
-                            <a  href="./shop.php">Shop now</a>
-                        </div>
-                    </div>
-                    <div class="banner__item">
-                        <div class="banner__text">
-                            <h1>Elevate Your Style</h1>
-                            <a href="./shop.php">Shop now</a>
-                        </div>
-                    </div>
+
                 </div>
             </div>
         </div>
@@ -82,7 +72,7 @@ include("./classes/products.php");
         <div class="row">
             <div class="col-lg-4 col-md-4">
                 <div class="section-title">
-                    <h4>New product</h4>
+                    <h4 style="font-size: 25px;">New product</h4>
                 </div>
             </div>
            
@@ -181,7 +171,60 @@ include("./classes/products.php");
     </div>
 </section>
 <!-- Discount Section End -->
+<section class="product spad ">
+    <div class="container ">
+        <div class="row">
+            <div class="col-lg-4 col-md-4">
+                <div class="section-title">
+                    <h4 style="font-size: 25px;">Top-Selling Products</h4>
+                </div>
+            </div>
+           
+        </div>
+        <div class="row property__gallery " id="productList">
+            
 
+            <?php
+          
+            $result=$product->getTopSellingProducts();
+
+            
+            foreach ($result as $row) {   ?>
+               
+                <div class="col-lg-3 col-md-4 col-sm-6 mix women men kid accessories cosmetic">
+                    <div class="product__item">
+                        <div class="product__item__pic set-bg" data-setbg="admin_dashboard/images/<?php echo $row['cover']; ?>"> 
+                            
+                                <?php
+                                if($row['quantity']<=1){
+                                    echo'<div class="label stockout stockblue">Out Of Stock</div>';
+                                }
+                                
+                                ?>
+                            <ul class="product__hover">
+                                <li><a href="admin_dashboard/images/<?php echo $row['cover']; ?>" class="image-popup"><span class="arrow_expand"></span></a></li>
+                                <li><a class="addToWishlist" data-product-id="<?php echo $row['id']; ?>"><span class="icon_heart_alt"></span></a></li>
+                               <?php
+                                if(!($row['quantity']<=1)){
+                                   echo' <li><a class="addToCart"   data-product-id="'.$row['id'].'"><span class="icon_bag_alt"></span></a></li>';
+                                }
+                               ?>
+                            </ul>
+                        </div>
+                        <div class="product__item__text">
+                            <h6><a href="./product-details.php?id=<?php echo $row['id'] ?>"><?php echo $row['name']; ?></a></h6>
+                            
+                            <div class="product__price">$<?php echo $row['price'] ?></div>
+                        </div>
+                    </div>
+                </div>
+          <?php  }
+            
+            ?>
+           
+        </div>
+    </div>
+</section>
 <!-- Services Section Begin -->
 <section class="services spad">
     <div class="container">
@@ -217,6 +260,12 @@ include("./classes/products.php");
         </div>
     </div>
 </section>
+
+
+
+
+
+
 <?php include('./footer.php'); ?>
 <!-- Services Section End -->
 
@@ -251,6 +300,8 @@ include("./classes/products.php");
 });
 
 </script>
+
+<script src="js/script.js"></script>
 </body>
 
 </html>

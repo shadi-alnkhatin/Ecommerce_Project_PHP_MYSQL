@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Wishlist</title>
     <link rel="icon" href="./img/icon.svg">
-
 	<link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
     <link rel="stylesheet" href="css/font-awesome.min.css" type="text/css">
     <link rel="stylesheet" href="css/elegant-icons.css" type="text/css">
@@ -17,13 +16,27 @@
 </head>
 <body>
 <?php include('./navbar.php'); ?>
+<br><br>
+<br>
 
 <div class="container">
+    <?php
+      if (!isset($_SESSION['user_id'])){
+        echo'<h3 class="my-5"> Login To View Your Wishlist </h3>';
+        echo'<a class="btn btn-primary text-light" href="./register.php">Login Now</a>';
+        exit();
+    }
+
+    ?>
 	<h3 class="mt-5 mx-3">Wishlist</h3>
     <div class="col-lg-9 col-md-9">
         <div class="row" id="productList">
+
+
+
+
             <?php 
-           
+
             $database2 = new Database();
             $db2 = $database2->connect();
             $user_id = $_SESSION['user_id'];
