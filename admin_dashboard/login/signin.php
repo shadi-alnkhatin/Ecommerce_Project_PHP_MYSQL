@@ -77,9 +77,18 @@ class User {
                     return true;
                 }
             } else {
-                $_SESSION['error_message'] = 'Access Denied: Only admins and superadmins are allowed to log in.';
-                header("Location: ./login.php");
-                exit;
+                echo "<script>
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'This account is blocked.',
+                        confirmButtonText: 'OK'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = '../index.php';
+                        }
+                    });
+                </script>";
+                return false;
             }
         }
         $_SESSION['error_message'] = 'Invalid email or password.';
@@ -99,10 +108,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['email'], $_POST['passw
         header("Location: ../index.php");
         exit;
     } else {
-        echo "<script>
-            alert('Invalid email or password.');
-            window.location.href = './login.php';
-        </script>";
+        header('Location: ../login/login.php?message=invalidEmailOrPassword');
+        exit();
     }
 }
 ?>

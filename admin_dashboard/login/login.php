@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -11,6 +9,7 @@
     <meta name="author" content="" />
     <title>Login - SB Admin</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="css/styles.css" rel="stylesheet" />
     <style>
         .grad {
@@ -87,6 +86,23 @@
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
     <script src="js/scripts.js"></script>
+    <?php 
+
+if (isset($_GET['message']) && $_GET['message'] == 'invalidEmailOrPassword') {
+    echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>";
+    echo "<script>
+        Swal.fire({
+            icon: 'error',
+            title: 'Invalid email or password',
+            confirmButtonText: 'OK'
+        }).then(() => {
+            // Clear the URL after displaying the alert
+            window.history.replaceState(null, null, window.location.pathname);
+        });
+    </script>";
+}
+
+?>
 </body>
 
 </html>
