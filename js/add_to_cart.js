@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', function() {
         addToWishlist.forEach(function(button) {
             button.addEventListener('click', function() {
                 if (!isLoggedIn) {
-                    $.notify('Please log in to add items to your cart.', { className: 'info', position: 'top center' });
+                    $.notify('Please log in to add items to your wishlist.', { className: 'info', position: 'top center' });
                     return; }
                 var productId = this.getAttribute('data-product-id');
 

@@ -68,6 +68,23 @@ class Product {
         // Fetch the results
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    public function getTopSellingProducts($limit = 4) {
+        $query = "
+            SELECT p.*, COUNT(oi.product_id) AS sales_count
+            FROM order_items oi
+            INNER JOIN products p ON oi.product_id = p.id
+            WHERE p.deleted = 0
+            GROUP BY oi.product_id
+            ORDER BY sales_count DESC
+            LIMIT :limit
+        ";
+    
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+        $stmt->execute();
+    
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
     
     
     public function getProductsDetails($product_id){
@@ -92,7 +109,7 @@ class Product {
 
     public function getTotalProducts($league_id = null, $team_id = null, $minPrice = null, $maxPrice = null) {
         // Start with the base query to count products
-        $query = "SELECT COUNT(*) FROM products WHERE 1=1";
+        $query = "SELECT COUNT(*) FROM products WHERE deleted = 0";
         
         // Add conditions based on filters provided
         if ($league_id !== null) {
@@ -121,7 +138,7 @@ class Product {
     }
     public function getRelatedProducts($product_id) {
         // First query to get the team_id and league_id of the current product
-        $query = 'SELECT team_id, league_id FROM products WHERE id = :product_id';
+        $query = 'SELECT team_id, league_id FROM products WHERE id = :product_id and deleted =0';
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':product_id', $product_id, PDO::PARAM_INT);
         $stmt->execute();
@@ -134,7 +151,7 @@ class Product {
         $team_id = $result['team_id'];
         $league_id = $result['league_id'];
     
-        $query = 'SELECT * FROM products WHERE league_id = :league_id AND team_id = :team_id AND id != :product_id LIMIT 3';
+        $query = 'SELECT * FROM products WHERE league_id = :league_id AND team_id = :team_id AND id != :product_id and  deleted =0 LIMIT 3';
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':league_id', $league_id, PDO::PARAM_INT);
         $stmt->bindParam(':team_id', $team_id, PDO::PARAM_INT);

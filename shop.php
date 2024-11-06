@@ -187,6 +187,10 @@ include('./classes/products.php');
                     $product_obj = new Product($db);
                     $productList = $product_obj->getProducts();
 
+                    if($productList==0){
+                        echo 'No products found';
+                    }
+
                     foreach ($productList as $product) {
                         ?>
                         <div class="col-lg-4 col-md-6">

@@ -33,6 +33,10 @@ function filter(page = 1) {
 
                 let productList = document.getElementById('productList');
                 productList.innerHTML = ''; 
+
+                if(products.length <= 0) {
+                    productList.innerHTML = '<h2 class="m-auto">NO product found</h2>';
+                }
                 
                 products.forEach(product => {
                      outOfStockLabel = '';
@@ -163,6 +167,10 @@ if (query !== "") {
                     const paginationDiv = document.querySelector('.pagination__option');
                     paginationDiv.innerHTML = '';
 
+                    if(products.length <= 0) {
+                        productList.innerHTML = '<h4 class="mx-5 my-3">NO product found</h4>';
+                    }
+                    document.querySelector('.brand-logo h3').innerHTML = 'Search Result';
                     // Render products
                     products.forEach(element => {
 

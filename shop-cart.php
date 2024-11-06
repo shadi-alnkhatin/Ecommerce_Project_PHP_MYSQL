@@ -25,6 +25,22 @@
     <link rel="stylesheet" href="css/slicknav.min.css" type="text/css">
     <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
     <link rel="stylesheet" href="css/style.css" type="text/css">
+    <link rel="stylesheet" href="css/cart.css">
+    <!-- Font Awesome -->
+<link
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+  rel="stylesheet"
+/>
+<!-- Google Fonts -->
+<link
+  href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+  rel="stylesheet"
+/>
+<!-- MDB -->
+<link
+  href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/8.0.0/mdb.min.css"
+  rel="stylesheet"
+/>
 
     <style>
         .truncate-multi-line {
@@ -32,6 +48,9 @@
     -webkit-box-orient: vertical;   /* Sets the orientation to vertical */
     overflow: hidden;               /* Hides overflowed text */
     -webkit-line-clamp: 3;          /* Limits text to 3 lines */
+}
+.quantity-input {
+    width: 50px;
 }
 
 @media (max-width: 768px) {
@@ -79,190 +98,95 @@
     <section class="shop-cart spad">
     <div class="container">
         <div class="row">
-            <div class="col-lg-12">
-                <div class="shop__cart__table table-responsive">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Product</th>
-                                <th>Size</th>
-                                <th>Price</th>
-                                <th>Quantity</th>
-                                <th>Total</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php
-                            // Check if the user is logged in
-                            if (!isLoggedIn()) {
-                                echo "<tr><td colspan='6' class='text-center'>Please log in to view your cart.</td></tr>";
-                            } else {
-                                // Create database connection
-                                $database = new Database();
-                                $db = $database->connect();
+            <!-- Cart Items Section (Left Column) -->
+            <div class="col-lg-8">
+                <div class="cart-items">
+                    <?php
+                    if (!isLoggedIn()) {
+                        echo "<div class='text-center'>Please log in to view your cart.</div>";
+                    } else {
+                        $database = new Database();
+                        $db = $database->connect();
 
-                                if (!$db) {
-                                    echo "<tr><td colspan='6' class='text-center'>Database connection failed.</td></tr>";
-                                } else {
-                                    // Create Cart instance to fetch items
-                                    $cart = new Cart($db, $_SESSION['user_id']);
-                                    $cart_items = $cart->getCartItems();
-                                    $total_price = $cart->calculateTotal();
+                        if (!$db) {
+                            echo "<div class='text-center'>Database connection failed.</div>";
+                        } else {
+                            $cart = new Cart($db, $_SESSION['user_id']);
+                            $cart_items = $cart->getCartItems();
+                            $total_price = $cart->calculateTotal();
 
-                                    // Check if the cart contains any items
-                                    if (count($cart_items) > 0) {
-                                        $total = 0;
-                                        foreach ($cart_items as $item) {
-                                            $productTotal = $item['product_price'] * $item['quantity'];
-                                            $total += $productTotal;
-                            ?>
-                                            <tr data-product-id="<?php echo $item['id']; ?>">
-                                                <td class="cart__product__item mr-3">
-                                                    <img src="admin_dashboard/images/<?php echo $item['cover'] ?>" alt="" width="60px">
-                                                    <div class="cart__product__item__title">
-                                                        <h6 class="truncate-multi-line "><?php echo $item['name']; ?></h6>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <select class="item_size mr-5 select-form">
-                                                        <!-- Add size options dynamically as needed -->
-                                                        <option value="<?php echo $item['size']; ?>"><?php echo $item['size']; ?></option>
-                                                    </select>
-                                                </td>
-                                                <td class="cart__price">$<?php echo $item['product_price']; ?></td>
-                                                <td class="cart__quantity">
-                                                    <div class="">
-                                                        <input type="number" class="quantity-input form-control" style="width: 65px;" value="<?php echo $item['quantity']; ?>" min="1">
-                                                    </div>
-
-
-                                                </td>
-                                                <td class="cart__total">$<span class="product-total"><?php echo $productTotal; ?></span></td>
-                                                <td class="cart__close"><span class="icon_close"></span></td>
-                                            </tr>
-                            <?php
-                                        }
-                                    } else {
-                                        echo "<tr><td colspan='6' class='text-center'>Your cart is empty!</td></tr>";
-                                    }
+                            if (count($cart_items) > 0) {
+                                foreach ($cart_items as $item) {
+                                    $productTotal = $item['product_price'] * $item['quantity'];
+                    ?>
+                                    <div class="cart-item d-flex align-items-center mb-4" data-product-id="<?php echo $item['id']; ?>">
+                                        <div class="cart-item-image">
+                                            <img src="admin_dashboard/images/<?php echo $item['cover'] ?>" alt="" width="60px">
+                                        </div>
+                                        <div class=" flex-grow-1 ml-3 cart-item-details " >
+                                            <h6 ><?php echo $item['name']; ?></h6>
+                                            <div class="d-flex align-items-center">
+                                                <span>Size:</span>
+                                                <select class="item_size ml-2">
+                                                    <option value="<?php echo $item['size']; ?>"><?php echo $item['size']; ?></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="cart-item-quantity d-flex align-items-center ml-3">
+                                            <input type="number" class="quantity-input form-control form-control-sm" value="<?php echo $item['quantity']; ?>" min="1">
+                                        </div>
+                                        <div class="cart-item-total ml-3">
+                                            <span class="product-total">$<?php echo $productTotal; ?></span>
+                                        </div>
+                                        <div class="cart-item-remove ml-3">
+                                            <span class="icon_close"></span>
+                                        </div>
+                                    </div>
+                                    <br>
+                    <?php
                                 }
+                            } else {
+                                echo "<div class='text-center'>Your cart is empty!</div>";
                             }
-                            ?>
-                        </tbody>
-                    </table>
+                        }
+                    }
+                    ?>
                 </div>
             </div>
-        </div>
-        <!-- Additional cart footer sections -->
-        <div class="row">
-            <div class="col-lg-6 col-md-6 col-sm-6">
-                <div class="cart__btn">
-                    <a href="./index.php">Continue Shopping</a>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="discount__content" <?php if(!isLoggedIn()){echo 'style="display:none"';} ?>>
-                    <h6>Discount codes</h6>
-                    <form >
-                    <input id="couponCode" type="text" placeholder="Enter your coupon code" >
-                    <button id="applyCoupon" type="button" class="site-btn" <?php if($total_price<=0){echo 'disabled';} ?>>Apply</button>
-                    </form>
-                </div>
-            </div>
-            <div class="col-lg-4 offset-lg-2" <?php if(!isLoggedIn()){echo 'style="display:none"';}?>>
-                <div class="cart__total__procced">
-                    <h6>Cart total</h6>
-                    <ul>
-                        <li>Total <span id="cart-total">$<?php echo $total_price ? $total_price : 0; ?></span></li>
-                    </ul>
-                    <?php if(!$total_price<=0){
-                      echo'  <a href="./checkout.php" class="primary-btn" >Proceed to checkout</a>';
-                    }?>
-                    
+
+            <!-- Discount and Checkout Section (Right Column) -->
+            <div class="col-lg-4">
+                <div class="cart-summary">
+                    <div class="cart-total">
+                        <h6>Cart total</h6>
+                        <p>Total: $<span id="cart-total"><?php echo $total_price ? $total_price : 0; ?></span></p>
+                        <p class="discount_total" style="visibility: hidden">Total After Discount: $<span></span></p>
+                    </div>
+
+                    <div class="discount-content" <?php if(!isLoggedIn()){echo 'style="display:none"';} ?>>
+                        <h6>Discount codes</h6>
+                        <form>
+                            <input id="couponCode" type="text" placeholder="Enter your coupon code">
+                            <button id="applyCoupon" type="button" class="site-btn"  <?php if($total_price <= 0){echo 'disabled';} ?>>Apply</button>
+                        </form>
+                    </div>
+
+                    <?php if($total_price > 0): ?>
+                        <a href="./checkout.php" class="primary-btn mt-3" style="width:100%; text-align:center;">Proceed to checkout</a>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
+
+
+
     <!-- Shop Cart Section End -->
 
   
-
-    <!-- Footer Section Begin -->
-    <footer class="footer">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-4 col-md-6 col-sm-7">
-                    <div class="footer__about">
-                        <div class="footer__logo">
-                            <a href="./index.html"><img src="img/logo.png" alt=""></a>
-                        </div>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
-                        cilisis.</p>
-                        <div class="footer__payment">
-                            <a href="#"><img src="img/payment/payment-1.png" alt=""></a>
-                            <a href="#"><img src="img/payment/payment-2.png" alt=""></a>
-                            <a href="#"><img src="img/payment/payment-3.png" alt=""></a>
-                            <a href="#"><img src="img/payment/payment-4.png" alt=""></a>
-                            <a href="#"><img src="img/payment/payment-5.png" alt=""></a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-2 col-md-3 col-sm-5">
-                    <div class="footer__widget">
-                        <h6>Quick links</h6>
-                        <ul>
-                            <li><a href="#">About</a></li>
-                            <li><a href="#">Blogs</a></li>
-                            <li><a href="#">Contact</a></li>
-                            <li><a href="#">FAQ</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-lg-2 col-md-3 col-sm-4">
-                    <div class="footer__widget">
-                        <h6>Account</h6>
-                        <ul>
-                            <li><a href="#">My Account</a></li>
-                            <li><a href="#">Orders Tracking</a></li>
-                            <li><a href="#">Checkout</a></li>
-                            <li><a href="#">Wishlist</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-8 col-sm-8">
-                    <div class="footer__newslatter">
-                        <h6>NEWSLETTER</h6>
-                        <form action="#">
-                            <input type="text" placeholder="Email">
-                            <button type="submit" class="site-btn">Subscribe</button>
-                        </form>
-                        <div class="footer__social">
-                            <a href="#"><i class="fa fa-facebook"></i></a>
-                            <a href="#"><i class="fa fa-twitter"></i></a>
-                            <a href="#"><i class="fa fa-youtube-play"></i></a>
-                            <a href="#"><i class="fa fa-instagram"></i></a>
-                            <a href="#"><i class="fa fa-pinterest"></i></a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-12">
-                    <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-                    <div class="footer__copyright__text">
-                        <p>Copyright &copy; <script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="fa fa-heart" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a></p>
-                    </div>
-                    <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-                </div>
-            </div>
-        </div>
-    </footer>
-
     <!-- Js Plugins -->
     <script src="js/jquery-3.3.1.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
@@ -277,6 +201,11 @@
     <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
     <script src="js/main.js"></script>
     <script src="js/cart.js"></script> 
+    <!-- MDB -->
+<script
+  type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/8.0.0/mdb.umd.min.js"
+></script>
     <script>
         document.getElementById('applyCoupon').addEventListener('click', function() {
         const couponCode = document.getElementById('couponCode').value;
@@ -295,8 +224,16 @@
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            document.getElementById('cart-total').textContent = `$${data.discountedTotal}`;
+            let cartTotal = document.querySelector('.cart-total .discount_total');
+            let discount_total=document.querySelector('.cart-total .discount_total span');
+            cartTotal.style='visibility:visible';
+            discount_total.textContent = `${data.discountedTotal}`;
+                    
+            
+
+                    
             $.notify("Coupon applied!", "success");
+
         } else {
             $.notify("Invalid or expired coupon.", "error");
         }

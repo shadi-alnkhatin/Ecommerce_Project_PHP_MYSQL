@@ -52,6 +52,8 @@
 
     <!-- Offcanvas Menu Begin -->
     <?php include('./navbar.php'); ?>
+    <br><br>
+<br>
     <!-- Header Section End -->
     
     <section class="site-banner jarallax min-height300 padding-large">

@@ -125,12 +125,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
 
-.table {
+    .table {
     background-color: rgba(255, 255, 255, 0.15); 
     border-radius: 10px;
-    overflow: hidden;
+    overflow-y: scroll;
     color: #ffffff;
+ 
 }
+
 
 .table th,
 .table td {
@@ -266,7 +268,7 @@ a:hover{
                             <div class="form-group">
                                 <label>Country</label>
                                 <select name="country" id="country" class="form-control">
-                                    <option value="">Select Country</option>
+                                    <option value="<?php echo htmlspecialchars($user_info['country']); ?>"><?php echo htmlspecialchars($user_info['country']); ?></option>
                                 </select>
                             </div>
                             <div class="form-group">
@@ -312,7 +314,7 @@ a:hover{
                         <?php } elseif ($current_view === 'order_history') { ?>
     <h5>Order History</h5>
     <h6>Delivered Orders</h6>
-    <table class="table table-bordered table-striped">
+    <table class="table table-bordered table-striped table-responsive">
         <thead>
             <tr>
                 <th>Total Price</th>
@@ -358,7 +360,7 @@ a:hover{
     </table>
 
     <h6>Pending Orders</h6>
-    <table class="table table-bordered table-striped">
+    <table class="table table-bordered table-striped table-responsive">
         <thead>
             <tr>
                 <th>Total Price</th>

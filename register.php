@@ -62,11 +62,7 @@
                             <input type="password" name="password" id="password" class="pass" required>
                             <span class="error"></span>
                         </div>
-                        <div class="form-group">
-                            <label for="passwordCon">Confirm Password</label>
-                            <input type="password" name="passConfirm" id="passwordCon" class="passConfirm" required>
-                            <span class="error"></span>
-                        </div>
+                        
                         <div class="form-group">
                             <select class="form-select" name="country" id="country" required>
                                 <option value="" disabled selected>Select your country</option>
@@ -170,19 +166,11 @@
             }
         });
 
-        $('input[name="passConfirm"]').blur(function () {
-            if ($('input[name="password"]').val() !== $(this).val()) {
-                $(this).siblings('.error').text('Passwords don\'t match').fadeIn().parent('.form-group').addClass('hasError');
-                passConfirmError = true;
-            } else {
-                $(this).siblings('.error').text('').fadeOut().parent('.form-group').removeClass('hasError');
-                passConfirmError = false;
-            }
-        });
+       
 
         
         $('.signup-form').submit(function (e) {
-            if (user_name_Error || emailError || passwordError || passConfirmError) {
+            if (user_name_Error || emailError || passwordError ) {
                 e.preventDefault(); 
                 alert('Please correct the errors before submitting.');
             }
@@ -216,7 +204,7 @@ document.getElementById("loginForm").addEventListener("submit", function (e) {
     .then(data => {
         if (data.status === "success") {
             Swal.fire({
-                position: 'top-end',
+                position: 'top-center',
                 icon: 'success',
                 title: data.message,
                 showConfirmButton: false,
@@ -226,7 +214,7 @@ document.getElementById("loginForm").addEventListener("submit", function (e) {
             });
         } else {
             Swal.fire({
-                position: 'top-end',
+                position: 'top-center',
                 icon: 'error',
                 title: data.message,
                 confirmButtonText: 'OK'
